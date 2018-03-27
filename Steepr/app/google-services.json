@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "800344035885",
+    "firebase_url": "https://steepr-9d6e0.firebaseio.com",
+    "project_id": "steepr-9d6e0",
+    "storage_bucket": "steepr-9d6e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800344035885:android:672cb61f14ef0b54",
+        "android_client_info": {
+          "package_name": "com.example.yevgeniyshatrovskiy.steepr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800344035885-thpjg3ub2fat14oo8eu47720g8jt6ei4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.yevgeniyshatrovskiy.steepr",
+            "certificate_hash": "ffbd1c90174af9b6cda462bbfd5395b754d0f9c6"
+          }
+        },
+        {
+          "client_id": "800344035885-aklt7fpeh542n1rsve2u86djbpppv7sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD36KmwYBhjRqlAaUSnfS3Hs8RrHCuIZJY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800344035885-aklt7fpeh542n1rsve2u86djbpppv7sg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
