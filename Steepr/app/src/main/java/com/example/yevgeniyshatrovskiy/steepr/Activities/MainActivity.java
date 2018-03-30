@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final DatabaseReference myRef = database.getReference();
 
 
+        //Database Practice Objects
         Recipe greenTea = new Recipe("Green Tea", "Simple Tea", 20, null);
         writeRef.child(greenTea.getName()).setValue(greenTea);
         Recipe blueTea = new Recipe("Blue Tea", "Not Simple Tea", 20, null);
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ingredients.add("Sugar");
         Recipe yellowTea = new Recipe("Yellow Tea", "Complex Tea", 20, ingredients);
         writeRef.child(yellowTea.getName()).setValue(yellowTea);
-
 
 
 
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         recipeRecyler = findViewById(R.id.recipeRecycler);
-
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -142,22 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
             Recipe rec = singleSnapshot.getValue(Recipe.class);
             allRecipe.add(rec);
-            recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe);
-            recipeRecyler.setAdapter(recipeAdapter);
-        }
-    }
-
-    private void taskDeletion(DataSnapshot dataSnapshot){
-        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-            Recipe rec = singleSnapshot.getValue(Recipe.class);
-            Log.v(rec.getName(), "TEST");
-            String name = rec.getName();
-            for(int i = 0; i < allRecipe.size(); i++){
-                if(allRecipe.get(i).getName().equals(name)){
-                    allRecipe.remove(i);
-                }
-            }
-            recipeAdapter.notifyDataSetChanged();
             recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe);
             recipeRecyler.setAdapter(recipeAdapter);
         }
