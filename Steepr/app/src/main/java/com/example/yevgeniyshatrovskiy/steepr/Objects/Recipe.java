@@ -12,12 +12,21 @@ public class Recipe {
     private String description;
     private int secondsToSteep;
     private ArrayList<String> ingredients = new ArrayList();
+    private String imageURL;
 
     public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients) {
         this.name = name;
         this.description = description;
         this.secondsToSteep = secondsToSteep;
         this.ingredients = ingredients;
+    }
+
+    public Recipe(String name) {
+        this.name = name;
+    }
+
+    public Recipe() {
+        //Empty constructor needed for Firebase
     }
 
     public String getName() {
@@ -50,6 +59,14 @@ public class Recipe {
 
     public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
 }
