@@ -18,5 +18,7 @@
     </string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="Welcome">Welcome</string>
+    <string name="Start">Begin</string>
+    <string name="Pause">Pause</string>
 
 </resources>
