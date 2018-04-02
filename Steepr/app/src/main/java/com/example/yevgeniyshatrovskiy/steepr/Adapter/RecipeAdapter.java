@@ -3,6 +3,7 @@ package com.example.yevgeniyshatrovskiy.steepr.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecipeViewHolder viewHolder = null;
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent, false);
-        viewHolder = new RecipeViewHolder(layout, recipe);
+        final RecipeViewHolder viewHolder = new RecipeViewHolder(layout, recipe);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
+            }
+        });
+
         return viewHolder;
     }
 
