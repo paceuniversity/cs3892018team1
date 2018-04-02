@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 getAllTask(dataSnapshot);
+                Log.v("GET", "GET ALL");
             }
 
             @Override
