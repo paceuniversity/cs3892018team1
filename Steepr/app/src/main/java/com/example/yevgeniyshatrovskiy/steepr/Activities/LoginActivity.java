@@ -116,11 +116,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
+
+    // Needed to make sure back button doesn't go to login screen
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
         }
-
         getLoaderManager().initLoader(0, null, this);
     }
 

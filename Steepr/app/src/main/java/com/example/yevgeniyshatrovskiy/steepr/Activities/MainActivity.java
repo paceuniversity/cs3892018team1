@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -70,9 +71,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ArrayList<String> ingredients = new ArrayList<>();
         ingredients.add("Honey");
         ingredients.add("Sugar");
-        Recipe yellowTea = new Recipe("Yellow Tea", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea.getName()).setValue(yellowTea);
+        Recipe yellowTea1 = new Recipe("Yellow Tea1", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea1.getName()).setValue(yellowTea1);
 
+        Recipe yellowTea2 = new Recipe("Yellow Tea2", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea2.getName()).setValue(yellowTea2);
+
+        Recipe yellowTea3 = new Recipe("Yellow Tea3", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea3.getName()).setValue(yellowTea3);
+
+        Recipe yellowTea4 = new Recipe("Yellow Tea4", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea4.getName()).setValue(yellowTea4);
+
+        Recipe yellowTea5 = new Recipe("Yellow Tea5", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea5.getName()).setValue(yellowTea5);
+
+        Recipe yellowTea6 = new Recipe("Yellow Tea6", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea6.getName()).setValue(yellowTea6);
+
+        Recipe yellowTea7 = new Recipe("Yellow Tea7", "Complex Tea", 20, ingredients);
+        writeRef.child(yellowTea7.getName()).setValue(yellowTea7);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -100,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         allRecipe = new ArrayList<Recipe>();
         recipeRecyler = findViewById(R.id.recipeRecycler);
         recipeRecyler.setHasFixedSize(true);
-        recipeRecyler.setLayoutManager(new LinearLayoutManager(this));
+        recipeRecyler.setLayoutManager(new GridLayoutManager(this, 2));
 
 
         myRef.addChildEventListener(new ChildEventListener() {
