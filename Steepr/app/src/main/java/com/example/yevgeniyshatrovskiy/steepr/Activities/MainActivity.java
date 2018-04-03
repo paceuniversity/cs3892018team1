@@ -1,5 +1,6 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -166,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             allRecipe.add(rec);
             recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe);
             recipeRecyler.setAdapter(recipeAdapter);
+
         }
     }
 
@@ -227,5 +229,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void beginTimerActivity(float timer){
+        Intent newIntent = new Intent(MainActivity.this, Timer.class);
+        Bundle bundle = new Bundle();
+        bundle.putFloat("timeToSteep", timer);
+        newIntent.putExtras(bundle);
+        startActivity(newIntent);
     }
 }

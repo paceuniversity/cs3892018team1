@@ -1,5 +1,6 @@
 package com.example.yevgeniyshatrovskiy.steepr.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
+
     private List<Recipe> recipe;
     protected Context context;
 
@@ -33,6 +35,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
         this.context = context;
     }
 
+
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,10 +45,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
             @Override
             public void onClick(View v) {
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
-                Intent newIntent = new Intent(context, Timer.class);
-                Bundle bundle = new Bundle();
-                int timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
-                bundle.putInt("timeToSteep", timeToSteep);
+                float timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
+                ((MainActivity)context).beginTimerActivity(timeToSteep);
 
             }
         });
@@ -61,6 +62,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
     @Override
     public int getItemCount() {
         return this.recipe.size();
+
+    }
+
+    public void beginTimer(Intent intent){
+        MainActivity activity = new MainActivity();
+        activity.startActivity(intent);
     }
 
 

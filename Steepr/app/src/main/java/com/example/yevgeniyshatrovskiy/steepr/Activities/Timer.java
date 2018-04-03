@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,8 +15,8 @@ import java.util.Locale;
 
 public class Timer extends AppCompatActivity {
 
-    private long msteepTimeInMiliseconds = 20000;
-    private long mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
+    private long msteepTimeInMiliseconds;
+    private long mtimeLeftInMiliseconds;
 
     private TextView mCountDownText;
 
@@ -26,7 +27,7 @@ public class Timer extends AppCompatActivity {
 
     private CountDownTimer mTimer;
 
-    private boolean mTimerOn;
+    private boolean mTimerOn = false;
     private boolean mTimerOff;
 
     @Override
@@ -34,17 +35,25 @@ public class Timer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
        Bundle bundle = getIntent().getExtras();
-        msteepTimeInMiliseconds = (long) bundle.getFloat("timeToSteep");
+        msteepTimeInMiliseconds = (long) bundle.getFloat("timeToSteep") * 1000;
+        Log.v(msteepTimeInMiliseconds+"", "TIMER");
+
+        mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
+        Log.v(mtimeLeftInMiliseconds+"", "TIMER2");
         mCountDownText = findViewById(R.id.textViewCountdown);
 
         mButtonStart = findViewById(R.id.buttonStart);
         mButtonStop = findViewById(R.id.buttonStop);
+        updateCountDownTime();
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTimerOn){
+                Log.v("TIMER", "ON");
+                if (!mTimerOn){
+                    Log.v("TIMER", "TIMER ON");
                     startTimer();
+                    mTimerOn = true;
                 }
 
             }
@@ -53,8 +62,12 @@ public class Timer extends AppCompatActivity {
         mButtonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.v("TIMER", "STOP");
                 if (mTimerOn){
                     pauseTimer();
+                    mTimerOn = false;
+                }else{
+                    resetTimer();
                 }
 
             }
@@ -63,10 +76,11 @@ public class Timer extends AppCompatActivity {
     }
 
     private void startTimer() {
-        mCountDown = new CountDownTimer(msteepTimeInMiliseconds, 1000) {
+        mCountDown = new CountDownTimer(mtimeLeftInMiliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished){
-                msteepTimeInMiliseconds = millisUntilFinished;
+                Log.v("TIMER", "ON TICK: " + millisUntilFinished);
+                mtimeLeftInMiliseconds = millisUntilFinished;
                 updateCountDownTime();
 
             }
@@ -77,6 +91,7 @@ public class Timer extends AppCompatActivity {
             }
         }.start();
 
+        Log.v("TIMER", "STARTED");
         mTimerOn = true;
     }
 
@@ -92,6 +107,11 @@ public class Timer extends AppCompatActivity {
         String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
         mCountDownText.setText(timeLeftFormatted);
 
+    }
+
+    private void resetTimer(){
+        mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
+        updateCountDownTime();
     }
 
 }
