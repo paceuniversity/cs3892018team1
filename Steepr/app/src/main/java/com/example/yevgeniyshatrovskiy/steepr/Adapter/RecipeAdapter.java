@@ -1,6 +1,8 @@
 package com.example.yevgeniyshatrovskiy.steepr.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
+import com.example.yevgeniyshatrovskiy.steepr.Activities.Timer;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.example.yevgeniyshatrovskiy.steepr.ViewHolders.RecipeViewHolder;
@@ -21,6 +25,8 @@ import java.util.List;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
     private List<Recipe> recipe;
     protected Context context;
+
+    Intent newIntent;
 
     public RecipeAdapter(Context context, List<Recipe> recipeList){
         this.recipe = recipeList;
@@ -36,6 +42,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
             @Override
             public void onClick(View v) {
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
+                Intent newIntent = new Intent(context, Timer.class);
+                Bundle bundle = new Bundle();
+                int timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
+                bundle.putInt("timeToSteep", timeToSteep);
+
             }
         });
 
@@ -51,4 +62,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder>{
     public int getItemCount() {
         return this.recipe.size();
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,8 @@ public class Timer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
-
+       Bundle bundle = getIntent().getExtras();
+        msteepTimeInMiliseconds = (long) bundle.getFloat("timeToSteep");
         mCountDownText = findViewById(R.id.textViewCountdown);
 
         mButtonStart = findViewById(R.id.buttonStart);
@@ -80,7 +82,6 @@ public class Timer extends AppCompatActivity {
 
     private void pauseTimer(){
         mCountDown.cancel();
-
         mTimerOn = false;
     }
 
@@ -89,7 +90,6 @@ public class Timer extends AppCompatActivity {
         int seconds = (int) (mtimeLeftInMiliseconds / 1000) % 60;
 
         String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
-
         mCountDownText.setText(timeLeftFormatted);
 
     }
