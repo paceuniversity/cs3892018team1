@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
@@ -59,38 +60,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Test Database (Works)
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference writeRef = database.getReference("Public");
-        final DatabaseReference myRef = database.getReference();
+//        final DatabaseReference writeRef = database.getReference("public");
+        final DatabaseReference myRef = database.getReference("all");
 
 
-        //Database Practice Objects
-        Recipe greenTea = new Recipe("Green Tea", "Simple Tea", 20, null);
-        writeRef.child(greenTea.getName()).setValue(greenTea);
-        Recipe blueTea = new Recipe("Blue Tea", "Not Simple Tea", 20, null);
-        writeRef.child(blueTea.getName()).setValue(blueTea);
-        ArrayList<String> ingredients = new ArrayList<>();
-        ingredients.add("Honey");
-        ingredients.add("Sugar");
-        Recipe yellowTea1 = new Recipe("Yellow Tea1", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea1.getName()).setValue(yellowTea1);
-
-        Recipe yellowTea2 = new Recipe("Yellow Tea2", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea2.getName()).setValue(yellowTea2);
-
-        Recipe yellowTea3 = new Recipe("Yellow Tea3", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea3.getName()).setValue(yellowTea3);
-
-        Recipe yellowTea4 = new Recipe("Yellow Tea4", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea4.getName()).setValue(yellowTea4);
-
-        Recipe yellowTea5 = new Recipe("Yellow Tea5", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea5.getName()).setValue(yellowTea5);
-
-        Recipe yellowTea6 = new Recipe("Yellow Tea6", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea6.getName()).setValue(yellowTea6);
-
-        Recipe yellowTea7 = new Recipe("Yellow Tea7", "Complex Tea", 20, ingredients);
-        writeRef.child(yellowTea7.getName()).setValue(yellowTea7);
+//        //Database Practice Objects
+//        Recipe greenTea = new Recipe("Green Tea", "Simple Tea", 20, null);
+//        writeRef.child(greenTea.getName()).setValue(greenTea);
+//        Recipe blueTea = new Recipe("Blue Tea", "Not Simple Tea", 20, null);
+//        writeRef.child(blueTea.getName()).setValue(blueTea);
+//        ArrayList<String> ingredients = new ArrayList<>();
+//        ingredients.add("Honey");
+//        ingredients.add("Sugar");
+//        Recipe yellowTea1 = new Recipe("Yellow Tea1", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea1.getName()).setValue(yellowTea1);
+//
+//        Recipe yellowTea2 = new Recipe("Yellow Tea2", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea2.getName()).setValue(yellowTea2);
+//
+//        Recipe yellowTea3 = new Recipe("Yellow Tea3", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea3.getName()).setValue(yellowTea3);
+//
+//        Recipe yellowTea4 = new Recipe("Yellow Tea4", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea4.getName()).setValue(yellowTea4);
+//
+//        Recipe yellowTea5 = new Recipe("Yellow Tea5", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea5.getName()).setValue(yellowTea5);
+//
+//        Recipe yellowTea6 = new Recipe("Yellow Tea6", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea6.getName()).setValue(yellowTea6);
+//
+//        Recipe yellowTea7 = new Recipe("Yellow Tea7", "Complex Tea", 20, ingredients);
+//        writeRef.child(yellowTea7.getName()).setValue(yellowTea7);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -121,7 +122,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recipeRecyler.setLayoutManager(new GridLayoutManager(this, 2));
 
 
-        myRef.addChildEventListener(new ChildEventListener() {
+
+
+        ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 getAllTask(dataSnapshot);
@@ -149,8 +152,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
 
+        myRef.addChildEventListener(listener);
 
 
     }
