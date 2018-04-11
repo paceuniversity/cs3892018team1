@@ -10,14 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ExpandableListView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
@@ -32,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mAuth;
     FirebaseRecyclerAdapter adapter;
     FirebaseRecyclerOptions<Recipe> options;
-    RecyclerView recipeRecyler;
+    RecyclerView recipeRecycler;
+//    RecyclerView innerRecycler;
     private List<Recipe> allRecipe;
     private RecipeAdapter recipeAdapter;
 
@@ -113,15 +113,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        recipeRecyler = findViewById(R.id.recipeRecycler);
+        recipeRecycler = findViewById(R.id.recipeRecycler);
+//        innerRecycler = findViewById(R.id.innerRecipeRecycler);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         allRecipe = new ArrayList<Recipe>();
-        recipeRecyler = findViewById(R.id.recipeRecycler);
-        recipeRecyler.setHasFixedSize(true);
-        recipeRecyler.setLayoutManager(new GridLayoutManager(this, 2));
 
+        recipeRecycler.setHasFixedSize(true);
+        recipeRecycler.setLayoutManager(new GridLayoutManager(this, 1));
+//        innerRecycler.setHasFixedSize(true);
+//        innerRecycler.setLayoutManager(new GridLayoutManager(this, 1));
 
 
 
@@ -162,13 +164,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void getAllTask(DataSnapshot dataSnapshot){
+        ArrayList<Recipe> someRecipe = new ArrayList<>();
+        ArrayList<Recipe> tester = new ArrayList<>();
+        tester.add(new Recipe("Yes"));
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
             Recipe rec = singleSnapshot.getValue(Recipe.class);
             allRecipe.add(rec);
-            recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe);
-            recipeRecyler.setAdapter(recipeAdapter);
-
         }
+        someRecipe.add(allRecipe.get(0));
+        Log.v(someRecipe.size() + " size", "Main");
+        tester.add(new Recipe("We"));
+        recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe, someRecipe, tester);
+        recipeRecycler.setAdapter(recipeAdapter);
     }
 
 
@@ -229,6 +236,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void inflateFragment(){
+
     }
 
     public void beginTimerActivity(float timer){
