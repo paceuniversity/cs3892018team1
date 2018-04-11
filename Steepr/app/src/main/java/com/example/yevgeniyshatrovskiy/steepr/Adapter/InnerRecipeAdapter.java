@@ -69,7 +69,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
             public void onClick(View v) {
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
                 float timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
-                ((MainActivity)context).beginTimerActivity(timeToSteep, v);
+                ((MainActivity)context).beginTimerActivity(recipe.get(viewHolder.getAdapterPosition()), v);
 
             }
         });

@@ -19,6 +19,8 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
@@ -33,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -187,12 +190,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.v(allRec.size() +"", "allRec Size");
         Log.v(categories.get(0) +"", "cat Size");
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
+
+        recipeRecycler.setLayoutAnimation(controller);
         recipeAdapter = new RecipeAdapter(MainActivity.this, categories, allRec);
         recipeRecycler.setAdapter(recipeAdapter);
+        recipeRecycler.scheduleLayoutAnimation();
     }
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -246,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -255,12 +260,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void beginTimerActivity(float timer, View view){
+    public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
-        Bundle bundle = new Bundle();
-        bundle.putFloat("timeToSteep", timer);
-        newIntent.putExtras(bundle);
-
+        newIntent.putExtra("reci", new Gson().toJson(re));
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
                 (this, view.findViewById(R.id.imageView3), "myImage");
         startActivity(newIntent, options.toBundle());

@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
+import com.google.gson.Gson;
 
 import java.util.Locale;
 
@@ -31,14 +33,23 @@ public class Timer extends AppCompatActivity {
 
     private boolean mTimerOn = false;
     private boolean mTimerOff;
+    private Recipe rec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
-       Bundle bundle = getIntent().getExtras();
-        msteepTimeInMiliseconds = (long) bundle.getFloat("timeToSteep") * 1000;
-        Log.v(msteepTimeInMiliseconds+"", "TIMER");
+
+        String jsonObject;
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            jsonObject = bundle.getString("reci");
+            rec = new Gson().fromJson(jsonObject, Recipe.class);
+            msteepTimeInMiliseconds = (long)rec.getSecondsToSteep() * 1000;
+        }else{
+            //default 1 Minute
+            msteepTimeInMiliseconds = (long)60 * 1000;
+        }
 
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
         Log.v(mtimeLeftInMiliseconds+"", "TIMER2");

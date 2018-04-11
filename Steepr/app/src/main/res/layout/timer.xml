@@ -22,10 +22,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher_round"
-        android:transitionName="myImage"/>
+        android:transitionName="myImage"
+        app:srcCompat="@drawable/types_of_tea_yellow" />
 
     <Button
         android:id="@+id/buttonStart"
