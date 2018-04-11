@@ -13,6 +13,7 @@ public class Recipe {
     private int secondsToSteep;
     private ArrayList<String> ingredients = new ArrayList();
     private String imageURL;
+    private String category;
 
     public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients) {
         this.name = name;
@@ -27,6 +28,14 @@ public class Recipe {
 
     public Recipe() {
         //Empty constructor needed for Firebase
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getName() {

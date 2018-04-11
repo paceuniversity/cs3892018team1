@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     private List<Recipe> recipeCatlist;
     private List<Recipe> recipelist;
+    private ArrayList<String> strRecipelist;
+    private ArrayList<TeaCategory> teaCategories;
     private Recipe recipE;
     protected Context context;
     private LinearLayoutManager lln;
@@ -32,15 +35,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public int localIndex = 0;
     public ArrayList<Recipe> refinedList = new ArrayList<>();
 
-    Intent newIntent;
-
     public static class RecipeViewHolder extends RecyclerView.ViewHolder{
 
 
         private TextView rName;
         public RecyclerView innerRecyclerView;
 
-        public RecipeViewHolder(View itemView, final List<Recipe> recipes){
+        public RecipeViewHolder(View itemView, final ArrayList<String> recipes){
             super(itemView);
             rName = itemView.findViewById(R.id.recipeName);
             innerRecyclerView = itemView.findViewById(R.id.innerRecipeRecycler);
@@ -58,40 +59,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-    public RecipeAdapter(Context context, List<Recipe> recipeList, List<Recipe> recipeCategoryList, Recipe rec){
-        this.recipeCatlist = recipeList;
-        this.recipelist = recipeCategoryList;
+    public RecipeAdapter(Context context, ArrayList<String> recipeList, ArrayList<TeaCategory> teaCategories){
         this.context = context;
-        this.recipE = rec;
-    }
-
-    public RecipeAdapter(Context context, List<Recipe> recipeList, List<Recipe> recipeCategoryList){
-        this.recipeCatlist = recipeCategoryList;
-        this.recipelist = recipeList;
-        this.context = context;
-    }
-
-    public RecipeAdapter(Context context,
-                         List<Recipe> recipeList,
-                         ArrayList<Recipe> extra,
-                         List<Recipe> recipeCategoryList){
-        this.recipeCatlist = recipeCategoryList;
-        this.refinedList = extra;
-        this.recipelist = recipeList;
-        this.context = context;
-    }
-
-    public RecipeAdapter(Context context, List<Recipe> recipeList){
-        this.recipeCatlist = recipeList;
-        this.context = context;
+        this.strRecipelist = recipeList;
+        this.teaCategories = teaCategories;
     }
 
 
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent, false);
-        final RecipeViewHolder viewHolder = new RecipeViewHolder(layout, recipelist);
+        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.tea_category_layout, parent, false);
+        final RecipeViewHolder viewHolder = new RecipeViewHolder(layout, strRecipelist);
         return viewHolder;
     }
 
@@ -102,19 +81,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.innerRecyclerView.setLayoutManager(lln);
             Log.v("MOD2", "true");
             Log.v(position + "", "CONTEXT");
-            if(position == 0){
-                innerRecipeAdapter = new InnerRecipeAdapter(context, recipelist);
-                holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
-            }else{
-                innerRecipeAdapter = new InnerRecipeAdapter(context, refinedList);
-                holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
-            }
-
-
-
-//
-
-        holder.getrName().setText(recipeCatlist.get(position).getName());
+            innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
+            holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
+        holder.getrName().setText(strRecipelist.get(position));
 
         final boolean isExpanded = position==mExpandedPosition;
         holder.innerRecyclerView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
@@ -125,7 +94,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mExpandedPosition = isExpanded ? -1:position;
                 notifyItemChanged(position);
             }
@@ -134,7 +102,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public int getItemCount() {
-        return this.recipeCatlist.size();
+        return this.strRecipelist.size();
     }
 
     public void beginTimer(Intent intent){

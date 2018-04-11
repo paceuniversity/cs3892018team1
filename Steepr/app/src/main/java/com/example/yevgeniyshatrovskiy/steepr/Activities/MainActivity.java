@@ -1,10 +1,12 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,12 +15,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -114,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         recipeRecycler = findViewById(R.id.recipeRecycler);
-//        innerRecycler = findViewById(R.id.innerRecipeRecycler);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -122,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         recipeRecycler.setHasFixedSize(true);
         recipeRecycler.setLayoutManager(new GridLayoutManager(this, 1));
-//        innerRecycler.setHasFixedSize(true);
-//        innerRecycler.setLayoutManager(new GridLayoutManager(this, 1));
+
 
 
 
@@ -164,17 +166,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void getAllTask(DataSnapshot dataSnapshot){
-        ArrayList<Recipe> someRecipe = new ArrayList<>();
-        ArrayList<Recipe> tester = new ArrayList<>();
-        tester.add(new Recipe("Yes"));
+
+
+        ArrayList<String> categories = new ArrayList<>();
+        ArrayList<TeaCategory> allRec = new ArrayList<>();
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
             Recipe rec = singleSnapshot.getValue(Recipe.class);
-            allRecipe.add(rec);
+
+            if(!categories.contains(rec.getCategory())){
+                Log.v("NOT", rec.getCategory());
+                categories.add(rec.getCategory());
+                allRec.add(new TeaCategory(rec.getCategory()));
+            }
+
+            for(TeaCategory cat : allRec){
+                if(cat.getCategoryName().equals(rec.getCategory()))
+                    cat.addRecipes(rec);
+            }
         }
-        someRecipe.add(allRecipe.get(0));
-        Log.v(someRecipe.size() + " size", "Main");
-        tester.add(new Recipe("We"));
-        recipeAdapter = new RecipeAdapter(MainActivity.this, allRecipe, someRecipe, tester);
+
+        Log.v(allRec.size() +"", "allRec Size");
+        Log.v(categories.get(0) +"", "cat Size");
+        recipeAdapter = new RecipeAdapter(MainActivity.this, categories, allRec);
         recipeRecycler.setAdapter(recipeAdapter);
     }
 
@@ -242,11 +255,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void beginTimerActivity(float timer){
+    public void beginTimerActivity(float timer, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
         Bundle bundle = new Bundle();
         bundle.putFloat("timeToSteep", timer);
         newIntent.putExtras(bundle);
-        startActivity(newIntent);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
+                (this, view.findViewById(R.id.imageView3), "myImage");
+        startActivity(newIntent, options.toBundle());
     }
 }

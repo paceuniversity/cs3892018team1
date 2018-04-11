@@ -20,5 +20,6 @@
     <string name="Welcome">Welcome</string>
     <string name="Start">Begin</string>
     <string name="Pause">Pause</string>
+    <string name="myImage">myImage</string>
 
 </resources>

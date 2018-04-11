@@ -15,6 +15,7 @@ import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.InnerRecipeViewHolder>{
@@ -52,7 +53,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         }
     }
 
-    public InnerRecipeAdapter(Context context, List<Recipe> recipeList){
+    public InnerRecipeAdapter(Context context, ArrayList<Recipe> recipeList){
         this.recipe = recipeList;
         this.context = context;
     }
@@ -68,7 +69,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
             public void onClick(View v) {
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
                 float timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
-                ((MainActivity)context).beginTimerActivity(timeToSteep);
+                ((MainActivity)context).beginTimerActivity(timeToSteep, v);
 
             }
         });
@@ -87,11 +88,5 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         return this.recipe.size();
 
     }
-
-    public void beginTimer(Intent intent){
-        MainActivity activity = new MainActivity();
-        activity.startActivity(intent);
-    }
-
 
 }
