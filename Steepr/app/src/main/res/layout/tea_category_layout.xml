@@ -1,50 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:gravity="center"
     android:orientation="vertical">
 
-    <!--<TextView-->
-        <!--android:id="@+id/recipeName"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?android:attr/colorPressedHighlight"-->
-        <!--android:ems="10"-->
-        <!--android:gravity="center"-->
-        <!--android:inputType="textPersonName"-->
-        <!--android:text="Name"-->
-        <!--android:textSize="24sp"-->
-        <!--android:textStyle="bold|italic"-->
-        <!--tools:layout_editor_absoluteX="67dp"-->
-        <!--tools:layout_editor_absoluteY="66dp"-->
-        <!--tools:text="Test" />-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:id="@+id/imageBackground"
+        android:layout_height="match_parent"/>
 
-    <!--<ImageView-->
-    <!--android:id="@+id/imageView3"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:text="Name"-->
-    <!--android:textSize="24sp"-->
-    <!--android:textStyle="bold|italic"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:srcCompat="@mipmap/ic_steepr_bg" />-->
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="10dp"
-        app:contentPaddingBottom="8dp">
+        android:layout_height="100dp"
+        android:background="@color/greenTea"
+        app:cardCornerRadius="10dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/textbackground"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:gravity="right|fill_vertical"
+            android:paddingRight="10dp"
+            android:text="Green Tea"
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:layout_width="300dp"
+            android:id="@+id/teaBackground"
+            android:layout_height="180dp"
+            android:layout_gravity="left|center"
+            android:background="@drawable/greentea"
+            android:elevation="0dp"
+            android:scaleType="centerCrop" />
 
         <Button
             android:id="@+id/openButton"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="Click" />
-
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:elevation="0dp"
+            android:gravity="bottom|right|center_horizontal"
+            android:textAlignment="gravity" />
 
     </android.support.v7.widget.CardView>
 

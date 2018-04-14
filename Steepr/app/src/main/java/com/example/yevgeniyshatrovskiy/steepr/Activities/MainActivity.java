@@ -2,6 +2,7 @@ package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -11,7 +12,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,6 +28,7 @@ import android.view.animation.LayoutAnimationController;
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaDetails;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -170,33 +174,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getAllTask(DataSnapshot dataSnapshot){
 
-
-        ArrayList<String> categories = new ArrayList<>();
+        boolean missing = true;
+        ArrayList<TeaDetails> details = new ArrayList<>();
         ArrayList<TeaCategory> allRec = new ArrayList<>();
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
             Recipe rec = singleSnapshot.getValue(Recipe.class);
+            missing = true;
 
-            if(!categories.contains(rec.getCategory())){
-                Log.v("NOT", rec.getCategory());
-                categories.add(rec.getCategory());
+            if(details.isEmpty()){
+                Log.v("EMPTY", "THIS");
+                allRec.add(new TeaCategory(rec.getCategory()));
+                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(),rec.getBackGroundColor(),rec.getTextColor()));
+
+                missing = false;
+            }else{
+                for(TeaDetails deets:details) {
+                    if(deets.getCategoryName().equals(rec.getCategory())) {
+                        missing = false;
+                    }
+                }
+            }
+
+            if(missing){
+                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(), rec.getBackGroundColor(), rec.getTextColor()));
                 allRec.add(new TeaCategory(rec.getCategory()));
             }
 
+
             for(TeaCategory cat : allRec){
-                if(cat.getCategoryName().equals(rec.getCategory()))
+                if(cat.getCategoryName().equals(rec.getCategory())){
                     cat.addRecipes(rec);
+                    Log.v("ADDED", rec.getName());
+                }
+                Log.v("ADDING", rec.getName() + " " +cat.getCategoryName());
             }
         }
 
-        Log.v(allRec.size() +"", "allRec Size");
-        Log.v(categories.get(0) +"", "cat Size");
         final LayoutAnimationController controller =
                 AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
+        LinearLayoutManager lln = new GridLayoutManager(this,1);
 
+//        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recipeRecycler.getContext(), lln.getOrientation());
+        recipeRecycler.addItemDecoration(new VertSpace(10));
         recipeRecycler.setLayoutAnimation(controller);
-        recipeAdapter = new RecipeAdapter(MainActivity.this, categories, allRec);
+        recipeAdapter = new RecipeAdapter(MainActivity.this, details, allRec);
         recipeRecycler.setAdapter(recipeAdapter);
         recipeRecycler.scheduleLayoutAnimation();
+
+
+    }
+
+    class VertSpace extends RecyclerView.ItemDecoration{
+        private final int spacer;
+        //private final int spacer2;
+
+        public VertSpace(int spacer){
+            this.spacer = spacer;
+            //this.spacer2 = spacer2;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.bottom = spacer;
+
+        }
     }
 
     @Override

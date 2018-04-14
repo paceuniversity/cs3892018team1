@@ -14,12 +14,39 @@ public class Recipe {
     private ArrayList<String> ingredients = new ArrayList();
     private String imageURL;
     private String category;
+    private String backGroundColor;
+    private String backGroundImage;
+    private String textColor;
 
     public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients) {
         this.name = name;
         this.description = description;
         this.secondsToSteep = secondsToSteep;
         this.ingredients = ingredients;
+    }
+
+    public String getBackGroundColor() {
+        return backGroundColor;
+    }
+
+    public void setBackGroundColor(String backGroundColor) {
+        this.backGroundColor = backGroundColor;
+    }
+
+    public String getBackGroundImage() {
+        return backGroundImage;
+    }
+
+    public void setBackGroundImage(String backGroundImage) {
+        this.backGroundImage = backGroundImage;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
     }
 
     public Recipe(String name) {

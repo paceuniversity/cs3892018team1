@@ -2,8 +2,12 @@ package com.example.yevgeniyshatrovskiy.steepr.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaDetails;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +36,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     private List<Recipe> recipeCatlist;
     private List<Recipe> recipelist;
-    private ArrayList<String> strRecipelist;
+    private ArrayList<TeaDetails> strRecipelist;
     private ArrayList<TeaCategory> teaCategories;
     private Recipe recipE;
     protected Context context;
@@ -42,38 +49,37 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
 
         private TextView rName;
+        private ImageView imageText;
         private Button rButton;
+        private TextView imageColor;
         public RecyclerView innerRecyclerView;
 
-        public RecipeViewHolder(View itemView, final ArrayList<String> recipes){
+        public RecipeViewHolder(View itemView, final ArrayList<TeaDetails> recipes){
             super(itemView);
-//            rName = itemView.findViewById(R.id.recipeName);
+            imageColor = itemView.findViewById(R.id.textbackground);
+            imageText = itemView.findViewById(R.id.teaBackground);
             rButton = itemView.findViewById(R.id.openButton);
             innerRecyclerView = itemView.findViewById(R.id.innerRecipeRecycler);
             innerRecyclerView.setHasFixedSize(true);
             Log.v("RV", "rNAME");
         }
-
         public TextView getrName() {
             return rName;
         }
-
         public void setrName(String name) {
             rName.setText(name);
             Log.v("RV", name);
         }
-
         public Button getrButton() {
             return rButton;
         }
-
         public void setrButton(Button rButton) {
             this.rButton = rButton;
         }
     }
 
 
-    public RecipeAdapter(Context context, ArrayList<String> recipeList, ArrayList<TeaCategory> teaCategories){
+    public RecipeAdapter(Context context, ArrayList<TeaDetails> recipeList, ArrayList<TeaCategory> teaCategories){
         this.context = context;
         this.strRecipelist = recipeList;
         this.teaCategories = teaCategories;
@@ -90,18 +96,32 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(final RecipeViewHolder holder, final int position) {
-        lln = new LinearLayoutManager(context);
+        Drawable draw;
+        int draws;
+        lln = new GridLayoutManager(context,3);
         InnerRecipeAdapter innerRecipeAdapter;
         holder.innerRecyclerView.setLayoutManager(lln);
-            Log.v("MOD2", "true");
-            Log.v(position + "", "CONTEXT");
-            innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
-            holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
-        holder.getrButton().setText(strRecipelist.get(position));
-        Random rnd = new Random();
-        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-        holder.getrButton().setBackgroundColor(color);
+        Log.v("MOD2", "true");
+        Log.v(position + "", "CONTEXT");
+        innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
+        holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
+        Log.v("RECIPE COLOR", strRecipelist.get(position).getBackgroundColor());
+        Log.v("RECIPE IMAGE", strRecipelist.get(position).getImageName());
+        Log.v("RECIPE TCOLOR", strRecipelist.get(position).getTextColor());
+        Log.v("RECIPE CNAME", strRecipelist.get(position).getCategoryName());
+//      #F6F6F6"
+        try{
+            draws = context.getResources().getIdentifier(strRecipelist.get(position).getImageName()
+                    , "drawable"
+                    , context.getPackageName());
 
+            Log.v("colors ", strRecipelist.get(position).getBackgroundColor());
+            holder.imageColor.setBackgroundColor(Color.parseColor(strRecipelist.get(position).getBackgroundColor()));
+            draw = context.getDrawable(draws);
+            holder.imageText.setImageDrawable(draw);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
         final boolean isExpanded = position==mExpandedPosition;
         holder.innerRecyclerView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
@@ -135,6 +155,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         MainActivity activity = new MainActivity();
         activity.startActivity(intent);
     }
+
 
 
 }

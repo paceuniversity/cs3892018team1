@@ -9,13 +9,13 @@
     tools:context="com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recipeRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="40dp"
-        android:layoutAnimation="@anim/layout_animation_fall_down" />
+        android:background="@android:color/transparent"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        android:overScrollMode="never" />
 
 </android.support.constraint.ConstraintLayout>
