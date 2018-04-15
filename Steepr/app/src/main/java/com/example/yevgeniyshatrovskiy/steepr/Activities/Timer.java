@@ -1,6 +1,8 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,8 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
@@ -34,10 +38,18 @@ public class Timer extends AppCompatActivity {
     private boolean mTimerOn = false;
     private boolean mTimerOff;
     private Recipe rec;
+    private LinearLayout imageLayout;
+    private LinearLayout entireLayout;
+    private ImageView mainImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
         setContentView(R.layout.timer);
 
         String jsonObject;
@@ -50,6 +62,18 @@ public class Timer extends AppCompatActivity {
             //default 1 Minute
             msteepTimeInMiliseconds = (long)60 * 1000;
         }
+        imageLayout = findViewById(R.id.topLayout);
+        imageLayout.setBackgroundColor(Color.parseColor(rec.getBackGroundColor()));
+        entireLayout = findViewById(R.id.entireLayout);
+        entireLayout.setBackgroundColor(Color.parseColor(rec.getTextColor()));
+
+        mainImage = findViewById(R.id.mainImage);
+        int draws = getResources().getIdentifier(rec.getBackGroundImage()
+                , "drawable"
+                , getPackageName());
+
+        Drawable draw = getDrawable(draws);
+        mainImage.setImageDrawable(draw);
 
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
         Log.v(mtimeLeftInMiliseconds+"", "TIMER2");
@@ -68,7 +92,6 @@ public class Timer extends AppCompatActivity {
                     startTimer();
                     mTimerOn = true;
                 }
-
             }
         });
 
@@ -127,5 +150,9 @@ public class Timer extends AppCompatActivity {
         updateCountDownTime();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }
 

@@ -36,7 +36,8 @@
             android:layout_gravity="left|center"
             android:background="@drawable/greentea"
             android:elevation="0dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:transitionName="myImage"/>
 
         <Button
             android:id="@+id/openButton"

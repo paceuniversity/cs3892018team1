@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
@@ -50,7 +51,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private FirebaseAuth mAuth;
     FirebaseRecyclerAdapter adapter;
     FirebaseRecyclerOptions<Recipe> options;
@@ -73,36 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        final DatabaseReference writeRef = database.getReference("public");
         final DatabaseReference myRef = database.getReference("all");
-
-
-//        //Database Practice Objects
-//        Recipe greenTea = new Recipe("Green Tea", "Simple Tea", 20, null);
-//        writeRef.child(greenTea.getName()).setValue(greenTea);
-//        Recipe blueTea = new Recipe("Blue Tea", "Not Simple Tea", 20, null);
-//        writeRef.child(blueTea.getName()).setValue(blueTea);
-//        ArrayList<String> ingredients = new ArrayList<>();
-//        ingredients.add("Honey");
-//        ingredients.add("Sugar");
-//        Recipe yellowTea1 = new Recipe("Yellow Tea1", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea1.getName()).setValue(yellowTea1);
-//
-//        Recipe yellowTea2 = new Recipe("Yellow Tea2", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea2.getName()).setValue(yellowTea2);
-//
-//        Recipe yellowTea3 = new Recipe("Yellow Tea3", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea3.getName()).setValue(yellowTea3);
-//
-//        Recipe yellowTea4 = new Recipe("Yellow Tea4", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea4.getName()).setValue(yellowTea4);
-//
-//        Recipe yellowTea5 = new Recipe("Yellow Tea5", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea5.getName()).setValue(yellowTea5);
-//
-//        Recipe yellowTea6 = new Recipe("Yellow Tea6", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea6.getName()).setValue(yellowTea6);
-//
-//        Recipe yellowTea7 = new Recipe("Yellow Tea7", "Complex Tea", 20, ingredients);
-//        writeRef.child(yellowTea7.getName()).setValue(yellowTea7);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -141,14 +111,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getAllTask(dataSnapshot);
                 Log.v("GET", "GET ALL");
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 allRecipe.removeAll(allRecipe);
                 getAllTask(dataSnapshot);
                 Log.v("CHANGED", "CHANGED");
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.v("DELETED", "DELETED");
@@ -158,16 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         };
-
         myRef.addChildEventListener(listener);
-
-
     }
 
 
@@ -304,8 +268,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
         newIntent.putExtra("reci", new Gson().toJson(re));
+//        ImageView image = findViewById(R.id.imageBackground);
+//        image.setBackgroundResource(R.drawable.whitetea);
 //        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-//                (this, view.findViewById(R.id.imageView3), "myImage");
+//                (this, view.findViewById(R.id.teaBackground), "myImage");
 //        startActivity(newIntent, options.toBundle());
         startActivity(newIntent);
     }

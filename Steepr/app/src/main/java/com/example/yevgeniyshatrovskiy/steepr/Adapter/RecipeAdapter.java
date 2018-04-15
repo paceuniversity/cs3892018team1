@@ -40,7 +40,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     protected Context context;
     private LinearLayoutManager lln;
     public int mExpandedPosition = -1;
-    public int localIndex = 0;
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder{
 
@@ -98,13 +97,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         int draws;
         lln = new GridLayoutManager(context,1);
         holder.innerRecyclerView.setLayoutManager(lln);
-        Log.v("MOD2", "true");
         innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
         holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
-        Log.v("RECIPE COLOR", strRecipelist.get(position).getBackgroundColor());
-        Log.v("RECIPE IMAGE", strRecipelist.get(position).getImageName());
-        Log.v("RECIPE TCOLOR", strRecipelist.get(position).getTextColor());
-        Log.v("RECIPE CNAME", strRecipelist.get(position).getCategoryName());
         try{
             draws = context.getResources().getIdentifier(strRecipelist.get(position).getImageName()
                     , "drawable"
@@ -122,10 +116,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         final boolean isExpanded = position==mExpandedPosition;
         holder.innerRecyclerView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
-        localIndex++;
-
-        Log.v(localIndex+"", "Local Index Count");
-
 
         Button button = holder.itemView.findViewById(R.id.openButton);
         button.setOnClickListener(new View.OnClickListener() {
