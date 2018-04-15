@@ -100,10 +100,12 @@ public class Timer extends AppCompatActivity {
             public void onClick(View v) {
                 Log.v("TIMER", "STOP");
                 if (mTimerOn){
+                    mButtonStop.setText("Reset");
                     pauseTimer();
                     mTimerOn = false;
                 }else{
                     resetTimer();
+                    mButtonStop.setText("Stop");
                 }
 
             }
