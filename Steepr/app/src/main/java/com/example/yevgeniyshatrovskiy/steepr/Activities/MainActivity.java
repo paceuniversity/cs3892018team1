@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseRecyclerAdapter adapter;
     FirebaseRecyclerOptions<Recipe> options;
     RecyclerView recipeRecycler;
-//    RecyclerView innerRecycler;
     private List<Recipe> allRecipe;
     private RecipeAdapter recipeAdapter;
 
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getAllTask(DataSnapshot dataSnapshot){
 
-        boolean missing = true;
+        boolean missing;
         ArrayList<TeaDetails> details = new ArrayList<>();
         ArrayList<TeaCategory> allRec = new ArrayList<>();
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
@@ -182,10 +181,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             missing = true;
 
             if(details.isEmpty()){
-                Log.v("EMPTY", "THIS");
-                allRec.add(new TeaCategory(rec.getCategory()));
+                allRec.add(new TeaCategory(rec));
                 details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(),rec.getBackGroundColor(),rec.getTextColor()));
-
                 missing = false;
             }else{
                 for(TeaDetails deets:details) {
@@ -197,12 +194,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(missing){
                 details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(), rec.getBackGroundColor(), rec.getTextColor()));
-                allRec.add(new TeaCategory(rec.getCategory()));
+                allRec.add(new TeaCategory(rec));
             }
 
+            for(TeaCategory re : allRec){
+                Log.v("CONTEXT", re.toString());
+            }
 
             for(TeaCategory cat : allRec){
-                if(cat.getCategoryName().equals(rec.getCategory())){
+                if(cat.getCategoryName().equals(rec.getCategory()) && !(cat.getRecipes().contains(rec))){
                     cat.addRecipes(rec);
                     Log.v("ADDED", rec.getName());
                 }
@@ -210,12 +210,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
+
         final LayoutAnimationController controller =
                 AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
         LinearLayoutManager lln = new GridLayoutManager(this,1);
 
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recipeRecycler.getContext(), lln.getOrientation());
-        recipeRecycler.addItemDecoration(new VertSpace(10));
+        recipeRecycler.addItemDecoration(new VertSpace(0));
         recipeRecycler.setLayoutAnimation(controller);
         recipeAdapter = new RecipeAdapter(MainActivity.this, details, allRec);
         recipeRecycler.setAdapter(recipeAdapter);
@@ -226,11 +227,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     class VertSpace extends RecyclerView.ItemDecoration{
         private final int spacer;
-        //private final int spacer2;
 
         public VertSpace(int spacer){
             this.spacer = spacer;
-            //this.spacer2 = spacer2;
         }
 
         @Override
@@ -305,8 +304,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
         newIntent.putExtra("reci", new Gson().toJson(re));
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-                (this, view.findViewById(R.id.imageView3), "myImage");
-        startActivity(newIntent, options.toBundle());
+//        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
+//                (this, view.findViewById(R.id.imageView3), "myImage");
+//        startActivity(newIntent, options.toBundle());
+        startActivity(newIntent);
     }
 }

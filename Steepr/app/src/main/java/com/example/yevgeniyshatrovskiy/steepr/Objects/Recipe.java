@@ -25,6 +25,18 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
+    public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients, String imageURL, String category, String backGroundColor, String backGroundImage, String textColor) {
+        this.name = name;
+        this.description = description;
+        this.secondsToSteep = secondsToSteep;
+        this.ingredients = ingredients;
+        this.imageURL = imageURL;
+        this.category = category;
+        this.backGroundColor = backGroundColor;
+        this.backGroundImage = backGroundImage;
+        this.textColor = textColor;
+    }
+
     public String getBackGroundColor() {
         return backGroundColor;
     }
@@ -105,4 +117,18 @@ public class Recipe {
         this.imageURL = imageURL;
     }
 
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", secondsToSteep=" + secondsToSteep +
+                ", ingredients=" + ingredients +
+                ", imageURL='" + imageURL + '\'' +
+                ", category='" + category + '\'' +
+                ", backGroundColor='" + backGroundColor + '\'' +
+                ", backGroundImage='" + backGroundImage + '\'' +
+                ", textColor='" + textColor + '\'' +
+                '}';
+    }
 }

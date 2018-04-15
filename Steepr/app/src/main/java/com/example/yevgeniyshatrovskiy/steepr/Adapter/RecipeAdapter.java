@@ -34,8 +34,6 @@ import java.util.Random;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>{
 
-    private List<Recipe> recipeCatlist;
-    private List<Recipe> recipelist;
     private ArrayList<TeaDetails> strRecipelist;
     private ArrayList<TeaCategory> teaCategories;
     private Recipe recipE;
@@ -43,7 +41,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private LinearLayoutManager lln;
     public int mExpandedPosition = -1;
     public int localIndex = 0;
-    public ArrayList<Recipe> refinedList = new ArrayList<>();
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder{
 
@@ -97,19 +94,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public void onBindViewHolder(final RecipeViewHolder holder, final int position) {
         Drawable draw;
-        int draws;
-        lln = new GridLayoutManager(context,3);
         InnerRecipeAdapter innerRecipeAdapter;
+        int draws;
+        lln = new GridLayoutManager(context,1);
         holder.innerRecyclerView.setLayoutManager(lln);
         Log.v("MOD2", "true");
-        Log.v(position + "", "CONTEXT");
         innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
         holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
         Log.v("RECIPE COLOR", strRecipelist.get(position).getBackgroundColor());
         Log.v("RECIPE IMAGE", strRecipelist.get(position).getImageName());
         Log.v("RECIPE TCOLOR", strRecipelist.get(position).getTextColor());
         Log.v("RECIPE CNAME", strRecipelist.get(position).getCategoryName());
-//      #F6F6F6"
         try{
             draws = context.getResources().getIdentifier(strRecipelist.get(position).getImageName()
                     , "drawable"
@@ -117,6 +112,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
             Log.v("colors ", strRecipelist.get(position).getBackgroundColor());
             holder.imageColor.setBackgroundColor(Color.parseColor(strRecipelist.get(position).getBackgroundColor()));
+            holder.imageColor.setText(strRecipelist.get(position).getCategoryName());
+            holder.imageColor.setTextColor(Color.parseColor((strRecipelist.get(position).getTextColor())));
             draw = context.getDrawable(draws);
             holder.imageText.setImageDrawable(draw);
         }catch(Exception ex){
@@ -126,6 +123,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.innerRecyclerView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
         localIndex++;
+
         Log.v(localIndex+"", "Local Index Count");
 
 

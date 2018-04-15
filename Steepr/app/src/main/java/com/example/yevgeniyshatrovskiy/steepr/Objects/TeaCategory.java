@@ -12,9 +12,15 @@ public class TeaCategory {
 
     }
 
-    public TeaCategory(String categoryName) {
-        this.categoryName = categoryName;
+    public TeaCategory(Recipe rec) {
+        this.categoryName = rec.getCategory();
+        this.recipes.add(rec);
     }
+//
+//    public TeaCategory(String categoryName, Recipe rec) {
+//        this.categoryName = categoryName;
+//        this.recipes.add(rec);
+//    }
 
     public String getCategoryName() {
         return categoryName;
@@ -34,5 +40,15 @@ public class TeaCategory {
 
     public void addRecipes(Recipe rec){
         this.recipes.add(rec);
+    }
+
+    @Override
+    public String toString() {
+        String all = "";
+        for(Recipe re : recipes){
+            all += re.toString();
+        }
+            return all;
+
     }
 }
