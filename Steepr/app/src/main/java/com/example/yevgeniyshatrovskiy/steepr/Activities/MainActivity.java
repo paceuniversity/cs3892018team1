@@ -1,6 +1,7 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
 import android.app.ActivityOptions;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
+import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomTeaFragment;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaDetails;
@@ -79,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showDialog();
             }
         });
 
@@ -204,9 +205,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void showDialog() {
+        DialogFragment newFragment = CustomTeaFragment.newInstance();
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
