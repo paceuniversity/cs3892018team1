@@ -1,6 +1,7 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class Timer extends AppCompatActivity {
 
     private long msteepTimeInMiliseconds;
     private long mtimeLeftInMiliseconds;
+    private long mEndTime;
 
     private TextView mCountDownText;
 
@@ -32,8 +34,6 @@ public class Timer extends AppCompatActivity {
 
     private Button mButtonStart;
     private Button mButtonStop;
-
-    private CountDownTimer mTimer;
 
     private boolean mTimerOn = false;
     private boolean mTimerOff;
@@ -148,6 +148,8 @@ public class Timer extends AppCompatActivity {
     }
 
     private void resetTimer(){
+        mCountDown.cancel();
+        mTimerOn = false;
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
         updateCountDownTime();
     }
@@ -155,6 +157,45 @@ public class Timer extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putLong("millisLeft", mtimeLeftInMiliseconds);
+        editor.putBoolean("timerRunning", mTimerOff);
+        editor.putLong("endTime", mEndTime);
+
+        editor.apply();
+
+        if (mCountDown != null) {
+            mCountDown.cancel();
+        }
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+
+        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
+        mTimerOn = prefs.getBoolean("timerRunning", false);
+
+        updateCountDownTime();
+
+        if (mTimerOn) {
+            mEndTime = prefs.getLong("endTime", 0);
+            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+
+            if (mtimeLeftInMiliseconds < 0) {
+                mtimeLeftInMiliseconds = 0;
+                mTimerOn = false;
+            } else {
+                startTimer();
+            }
+        }
+    }
+
 }
 
