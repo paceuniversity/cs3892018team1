@@ -48,10 +48,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         private ImageView imageText;
         private Button rButton;
         private TextView imageColor;
+        private TextView actualText;
         public RecyclerView innerRecyclerView;
 
         public RecipeViewHolder(View itemView, final ArrayList<TeaDetails> recipes){
             super(itemView);
+            actualText = itemView.findViewById(R.id.texthollow);
             imageColor = itemView.findViewById(R.id.textbackground);
             imageText = itemView.findViewById(R.id.teaBackground);
             rButton = itemView.findViewById(R.id.openButton);
@@ -106,8 +108,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
             Log.v("colors ", strRecipelist.get(position).getBackgroundColor());
             holder.imageColor.setBackgroundColor(Color.parseColor(strRecipelist.get(position).getBackgroundColor()));
-            holder.imageColor.setText(strRecipelist.get(position).getCategoryName());
-            holder.imageColor.setTextColor(Color.parseColor((strRecipelist.get(position).getTextColor())));
+            holder.actualText.setText(strRecipelist.get(position).getCategoryName());
+            holder.actualText.setTextColor(Color.parseColor((strRecipelist.get(position).getTextColor())));
             draw = context.getDrawable(draws);
             holder.imageText.setImageDrawable(draw);
         }catch(Exception ex){
