@@ -1,5 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/mainLayout"
+    android:background="@color/colorPrimary"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -13,22 +15,16 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:textColorHint="@android:color/white"
+                android:id="@+id/name"
                 android:gravity="center"
                 android:hint="User Name" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="User Name" />
 
         </LinearLayout>
 
@@ -38,21 +34,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/email"
+                android:textColorHint="@android:color/white"
                 android:gravity="center"
-                android:hint="User Name" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="User Name" />
+                android:hint="Email Address" />
 
         </LinearLayout>
 
@@ -63,21 +54,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/teaname"
+                android:textColorHint="@android:color/white"
                 android:gravity="center"
-                android:hint="User Name" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="User Name" />
+                android:hint="Tea Name" />
 
         </LinearLayout>
 
@@ -87,21 +73,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/teacat"
+                android:textColorHint="@android:color/white"
                 android:gravity="center"
-                android:hint="User Name" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="User Name" />
+                android:hint="Tea Category" />
 
         </LinearLayout>
 
@@ -112,28 +93,24 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:textColorHint="@android:color/white"
                 android:gravity="center"
-                android:hint="User Name" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="User Name" />
+                android:id="@+id/special"
+                android:hint="Special Ingredients" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/plus_one_button"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_margin="0dp"
             android:layout_weight="1"
             android:text="Submit" />

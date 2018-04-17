@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
+
     android:gravity="center"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/greenTea">
+        android:background="@drawable/shapes">
 
 
         <TextView
@@ -49,7 +50,7 @@
             android:id="@+id/openButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
+            android:background="@drawable/shapes"
             android:elevation="0dp"
             android:gravity="bottom|right|center_horizontal"
             android:textAlignment="gravity" />

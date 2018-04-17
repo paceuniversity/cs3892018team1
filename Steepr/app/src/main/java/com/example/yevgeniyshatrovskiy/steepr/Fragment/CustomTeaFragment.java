@@ -1,5 +1,6 @@
 package com.example.yevgeniyshatrovskiy.steepr.Fragment;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.net.Uri;
@@ -75,6 +76,16 @@ public class CustomTeaFragment extends DialogFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setTitle("Custom");
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
+        return dialog;
     }
 
     @Override
@@ -82,9 +93,15 @@ public class CustomTeaFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_custom_tea, container, false);
-
         //Find the +1 button
         mPlusOneButton = view.findViewById(R.id.plus_one_button);
+        mPlusOneButton.setHint("Test");
+        mPlusOneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         return view;
     }
