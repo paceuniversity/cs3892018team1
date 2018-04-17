@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -45,7 +46,7 @@ import java.util.List;
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CustomTeaFragment.OnFragmentInteractionListener {
 
     private FirebaseAuth mAuth;
     FirebaseRecyclerAdapter adapter;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     //Test Database (Works)
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     DatabaseReference myRef = database.child("all");
+    ChildEventListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createListener(){
 
-        ChildEventListener listener = new ChildEventListener() {
+        listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 getAllTask(dataSnapshot);
@@ -217,6 +219,12 @@ public class MainActivity extends AppCompatActivity {
     public void showDialog() {
         DialogFragment newFragment = CustomTeaFragment.newInstance();
         newFragment.show(getFragmentManager(), "dialog");
+        myRef.removeEventListener(listener);
+        Log.v("LISTENER", "Removed");
+    }
+
+    public void restartListener(){
+        myRef.addChildEventListener(listener);
     }
 
     @Override
@@ -234,6 +242,11 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     @Override
@@ -280,10 +293,6 @@ public class MainActivity extends AppCompatActivity {
 //        drawer.closeDrawer(GravityCompat.START);
 //        return true;
 //    }
-
-    public void inflateFragment(){
-
-    }
 
     public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);

@@ -11,8 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.google.android.gms.plus.PlusOneButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 /**
  * A fragment with a Google +1 button.
@@ -99,10 +105,16 @@ public class CustomTeaFragment extends DialogFragment {
         mPlusOneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+//                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+//                DatabaseReference myRef = database.child("all");
+//                Recipe rep = new Recipe("Custom", "Weird", 60, null, "greentea","Green", "#ffffff","greentea",
+//                        "#BD8300","茶","茶");
+//                myRef.child("Public").child(rep.getName()).setValue(rep);
+                ((MainActivity)getActivity()).restartListener();
                 dismiss();
             }
         });
-
         return view;
     }
 

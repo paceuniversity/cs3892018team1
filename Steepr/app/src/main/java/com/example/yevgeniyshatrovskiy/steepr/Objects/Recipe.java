@@ -20,6 +20,23 @@ public class Recipe {
     private String chineseCategory;
     private String chineseName;
 
+    public Recipe(String name, String description, int secondsToSteep,
+                  ArrayList<String> ingredients, String imageURL, String category,
+                  String backGroundColor, String backGroundImage, String textColor,
+                  String chineseCategory, String chineseName) {
+        this.name = name;
+        this.description = description;
+        this.secondsToSteep = secondsToSteep;
+        this.ingredients = ingredients;
+        this.imageURL = imageURL;
+        this.category = category;
+        this.backGroundColor = backGroundColor;
+        this.backGroundImage = backGroundImage;
+        this.textColor = textColor;
+        this.chineseCategory = chineseCategory;
+        this.chineseName = chineseName;
+    }
+
     public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients) {
         this.name = name;
         this.description = description;
