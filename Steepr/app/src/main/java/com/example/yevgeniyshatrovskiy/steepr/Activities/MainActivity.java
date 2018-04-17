@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
     public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
         newIntent.putExtra("reci", new Gson().toJson(re));
+        newIntent.putExtra("english", english);
 //        ImageView image = findViewById(R.id.imageBackground);
 //        image.setBackgroundResource(R.drawable.whitetea);
 //        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation

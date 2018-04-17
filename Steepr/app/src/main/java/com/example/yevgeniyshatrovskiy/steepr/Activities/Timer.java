@@ -42,15 +42,12 @@ public class Timer extends AppCompatActivity {
     private LinearLayout imageLayout;
     private LinearLayout entireLayout;
     private ImageView mainImage;
+    private TextView textTitle;
+    private boolean english;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
-
         setContentView(R.layout.timer);
 
         String jsonObject;
@@ -59,10 +56,19 @@ public class Timer extends AppCompatActivity {
             jsonObject = bundle.getString("reci");
             rec = new Gson().fromJson(jsonObject, Recipe.class);
             msteepTimeInMiliseconds = (long)rec.getSecondsToSteep() * 1000;
+            english = bundle.getBoolean("english");
         }else{
             //default 1 Minute
             msteepTimeInMiliseconds = (long)60 * 1000;
         }
+
+        textTitle = findViewById(R.id.textTitle);
+        if(english){
+            textTitle.setText(rec.getName());
+        }else{
+            textTitle.setText(rec.getChineseName());
+        }
+
         imageLayout = findViewById(R.id.topLayout);
         imageLayout.setBackgroundColor(Color.parseColor(rec.getBackGroundColor()));
         entireLayout = findViewById(R.id.entireLayout);
