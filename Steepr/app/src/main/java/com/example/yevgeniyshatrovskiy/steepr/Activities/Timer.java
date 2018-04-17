@@ -125,7 +125,7 @@ public class Timer extends AppCompatActivity {
 
             @Override
             public void onFinish(){
-
+                mCountDownText.setText("Your tea is ready!");
             }
         }.start();
 
@@ -134,8 +134,10 @@ public class Timer extends AppCompatActivity {
     }
 
     private void pauseTimer(){
-        mCountDown.cancel();
-        mTimerOn = false;
+        if (mTimerOn) {
+            mCountDown.cancel();
+            mTimerOn = false;
+        }
     }
 
     private void updateCountDownTime(){
@@ -153,6 +155,30 @@ public class Timer extends AppCompatActivity {
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
         updateCountDownTime();
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("millisLeft", mtimeLeftInMiliseconds);
+        outState.putBoolean("timerRunning", mTimerOn);
+        outState.putLong("endTime", mEndTime);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mtimeLeftInMiliseconds = savedInstanceState.getLong("millisLeft");
+        mTimerOn = savedInstanceState.getBoolean("timerRunning");
+        updateCountDownTime();
+
+        if (mTimerOn) {
+            mEndTime = savedInstanceState.getLong("endTime");
+            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+            startTimer();
+        }
+    }
+
 
     @Override
     protected void onPause() {
