@@ -1,31 +1,26 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
-import android.app.ActivityOptions;
 import android.app.DialogFragment;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.ImageView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomTeaFragment;
@@ -44,14 +39,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     FirebaseRecyclerAdapter adapter;
@@ -59,6 +53,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView recipeRecycler;
     private List<Recipe> allRecipe;
     private RecipeAdapter recipeAdapter;
+    public boolean english = true;
+    MenuItem logo;
+
+    //Test Database (Works)
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference myRef = database.child("all");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
-
-        //Test Database (Works)
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference writeRef = database.getReference("public");
-        final DatabaseReference myRef = database.getReference("all");
-
-
+//        NavigationView navigationView = findViewById(R.id.nav_view);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,14 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
 
-
-
+//        navigationView.setNavigationItemSelectedListener(this);
 
         recipeRecycler = findViewById(R.id.recipeRecycler);
 
@@ -104,7 +95,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recipeRecycler.setLayoutManager(new GridLayoutManager(this, 1));
 
 
+        createListener();
 
+    }
+
+    public void createListener(){
 
         ChildEventListener listener = new ChildEventListener() {
             @Override
@@ -133,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         myRef.addChildEventListener(listener);
-    }
 
+    }
 
     private void getAllTask(DataSnapshot dataSnapshot){
 
@@ -147,7 +142,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(details.isEmpty()){
                 allRec.add(new TeaCategory(rec));
-                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(),rec.getBackGroundColor(),rec.getTextColor()));
+                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(),rec.getBackGroundColor(),
+                        rec.getTextColor(), rec.getChineseName(), rec.getChineseCategory()));
                 missing = false;
             }else{
                 for(TeaDetails deets:details) {
@@ -158,7 +154,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             if(missing){
-                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(), rec.getBackGroundColor(), rec.getTextColor()));
+                details.add(new TeaDetails(rec.getCategory(), rec.getBackGroundImage(),rec.getBackGroundColor(),
+                        rec.getTextColor(), rec.getChineseName(), rec.getChineseCategory()));
                 allRec.add(new TeaCategory(rec));
             }
 
@@ -183,10 +180,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recipeRecycler.getContext(), lln.getOrientation());
         recipeRecycler.addItemDecoration(new VertSpace(0));
         recipeRecycler.setLayoutAnimation(controller);
-        recipeAdapter = new RecipeAdapter(MainActivity.this, details, allRec);
+        recipeAdapter = new RecipeAdapter(MainActivity.this, details, allRec, english);
         recipeRecycler.setAdapter(recipeAdapter);
         recipeRecycler.scheduleLayoutAnimation();
-
 
     }
 
@@ -202,6 +198,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.getItemOffsets(outRect, view, parent, state);
             outRect.bottom = spacer;
 
+        }
+    }
+
+    public void changeLanguage(){
+        if(english == true){
+            english = false;
+            createListener();
+            Log.v("ENGLISH", "SET FALSE");
+        }
+        else{
+            english = true;
+            createListener();
+            Log.v("ENGLISH", "SET TRUE");
         }
     }
 
@@ -235,37 +244,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.mybutton) {
+            if(english)
+                item.setIcon(R.drawable.chineselogo);
+            else
+                item.setIcon(R.drawable.englishlogo);
+            changeLanguage();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        } else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
+//
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
     public void inflateFragment(){
 

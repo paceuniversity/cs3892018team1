@@ -40,6 +40,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     protected Context context;
     private LinearLayoutManager lln;
     public int mExpandedPosition = -1;
+    public boolean english;
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder{
 
@@ -50,6 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         private TextView imageColor;
         private TextView actualText;
         public RecyclerView innerRecyclerView;
+
 
         public RecipeViewHolder(View itemView, final ArrayList<TeaDetails> recipes){
             super(itemView);
@@ -77,10 +79,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
 
-    public RecipeAdapter(Context context, ArrayList<TeaDetails> recipeList, ArrayList<TeaCategory> teaCategories){
+    public RecipeAdapter(Context context, ArrayList<TeaDetails> recipeList, ArrayList<TeaCategory> teaCategories, boolean english){
         this.context = context;
         this.strRecipelist = recipeList;
         this.teaCategories = teaCategories;
+        this.english = english;
     }
 
 
@@ -99,7 +102,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         int draws;
         lln = new GridLayoutManager(context,1);
         holder.innerRecyclerView.setLayoutManager(lln);
-        innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes());
+        innerRecipeAdapter = new InnerRecipeAdapter(context, teaCategories.get(position).getRecipes(), english);
         holder.innerRecyclerView.setAdapter(innerRecipeAdapter);
         try{
             draws = context.getResources().getIdentifier(strRecipelist.get(position).getImageName()
@@ -108,7 +111,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
             Log.v("colors ", strRecipelist.get(position).getBackgroundColor());
             holder.imageColor.setBackgroundColor(Color.parseColor(strRecipelist.get(position).getBackgroundColor()));
-            holder.actualText.setText(strRecipelist.get(position).getCategoryName());
+
+            if(english)
+                holder.actualText.setText(strRecipelist.get(position).getCategoryName());
+            else
+                holder.actualText.setText(strRecipelist.get(position).getChineseCategory());
+
             holder.actualText.setTextColor(Color.parseColor((strRecipelist.get(position).getTextColor())));
             draw = context.getDrawable(draws);
             holder.imageText.setImageDrawable(draw);

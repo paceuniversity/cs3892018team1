@@ -17,6 +17,8 @@ public class Recipe {
     private String backGroundColor;
     private String backGroundImage;
     private String textColor;
+    private String chineseCategory;
+    private String chineseName;
 
     public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients) {
         this.name = name;
@@ -35,6 +37,23 @@ public class Recipe {
         this.backGroundColor = backGroundColor;
         this.backGroundImage = backGroundImage;
         this.textColor = textColor;
+    }
+
+
+    public String getChineseCategory() {
+        return chineseCategory;
+    }
+
+    public void setChineseCategory(String chineseCategory) {
+        this.chineseCategory = chineseCategory;
+    }
+
+    public String getChineseName() {
+        return chineseName;
+    }
+
+    public void setChineseName(String chineseName) {
+        this.chineseName = chineseName;
     }
 
     public String getBackGroundColor() {

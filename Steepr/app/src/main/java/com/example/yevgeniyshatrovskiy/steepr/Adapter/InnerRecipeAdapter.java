@@ -24,6 +24,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
     private List<Recipe> recipe;
     protected Context context;
+    public boolean english;
 
 
     public static class InnerRecipeViewHolder extends RecyclerView.ViewHolder{
@@ -50,9 +51,10 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         }
     }
 
-    public InnerRecipeAdapter(Context context, ArrayList<Recipe> recipeList){
+    public InnerRecipeAdapter(Context context, ArrayList<Recipe> recipeList, boolean english){
         this.recipe = recipeList;
         this.context = context;
+        this.english = english;
     }
 
 
@@ -76,7 +78,10 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
     @Override
     public void onBindViewHolder(@NonNull InnerRecipeViewHolder holder, int position) {
         Log.v("TESTER", recipe.get(position).getName());
-        holder.setrName(recipe.get(position).getName());
+        if(english)
+            holder.setrName(recipe.get(position).getName());
+        else
+            holder.setrName(recipe.get(position).getChineseName());
         holder.getrName().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
         holder.getrName().setTextColor(Color.parseColor(recipe.get(position).getBackGroundColor()));
     }

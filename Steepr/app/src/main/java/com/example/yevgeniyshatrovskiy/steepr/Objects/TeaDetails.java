@@ -6,12 +6,18 @@ public class TeaDetails {
     private String backgroundColor;
     private String textColor;
     private String categoryName;
+    private String chineseName;
+    private String chineseCategory;
 
-    public TeaDetails(String categoryName, String imageName, String backgroundColor, String textColor) {
+    public TeaDetails(String categoryName, String imageName,
+                      String backgroundColor, String textColor,
+                      String chineseName, String chineseCategory) {
         this.imageName = imageName;
         this.backgroundColor = backgroundColor;
         this.textColor = textColor;
         this.categoryName = categoryName;
+        this.chineseName = chineseName;
+        this.chineseCategory = chineseCategory;
     }
 
     public String getCategoryName() {
@@ -24,6 +30,22 @@ public class TeaDetails {
 
     public String getBackgroundColor() {
         return backgroundColor;
+    }
+
+    public String getChineseName() {
+        return chineseName;
+    }
+
+    public void setChineseName(String chineseName) {
+        this.chineseName = chineseName;
+    }
+
+    public String getChineseCategory() {
+        return chineseCategory;
+    }
+
+    public void setChineseCategory(String chineseCategory) {
+        this.chineseCategory = chineseCategory;
     }
 
     public void setBackgroundColor(String backgroundColor) {
