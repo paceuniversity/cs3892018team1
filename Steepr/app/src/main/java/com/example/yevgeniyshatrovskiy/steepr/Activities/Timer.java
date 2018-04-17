@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -65,7 +66,14 @@ public class Timer extends AppCompatActivity {
         imageLayout = findViewById(R.id.topLayout);
         imageLayout.setBackgroundColor(Color.parseColor(rec.getBackGroundColor()));
         entireLayout = findViewById(R.id.entireLayout);
-        entireLayout.setBackgroundColor(Color.parseColor(rec.getTextColor()));
+
+        int color1 = Color.parseColor((rec.getTextColor()));
+        int color2 = lighter(color1, 1);
+        int[] colors = {color1,color2};
+
+        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors);
+//        entireLayout.setBackgroundColor(Color.parseColor(rec.getTextColor()));
+        entireLayout.setBackground(gradientDrawable);
 
         mainImage = findViewById(R.id.mainImage);
         int draws = getResources().getIdentifier(rec.getBackGroundImage()
@@ -221,6 +229,14 @@ public class Timer extends AppCompatActivity {
                 startTimer();
             }
         }
+    }
+
+    //Not my code, found example on stackexchange
+    public static int lighter(int color, float factor) {
+        int red = (int) ((Color.red(color) * (1 - factor) / 255 + factor) * 255);
+        int green = (int) ((Color.green(color) * (1 - factor) / 255 + factor) * 255);
+        int blue = (int) ((Color.blue(color) * (1 - factor) / 255 + factor) * 255);
+        return Color.argb(Color.alpha(color), red, green, blue);
     }
 
 }
