@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +18,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.RelativeLayout;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomTeaFragment;
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
     private RecipeAdapter recipeAdapter;
     public boolean english = true;
     MenuItem logo;
+    private android.widget.RelativeLayout.LayoutParams layoutParams;
+    int x_cord;
+    int y_cord;
 
     //Test Database (Works)
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -78,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
                 showDialog();
             }
         });
+
+
+
 
 //        DrawerLayout drawer = findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
