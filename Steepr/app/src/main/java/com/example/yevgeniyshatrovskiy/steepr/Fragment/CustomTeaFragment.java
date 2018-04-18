@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
-import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
-import com.google.android.gms.plus.PlusOneButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 /**
  * A fragment with a Google +1 button.
@@ -79,6 +72,7 @@ public class CustomTeaFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -90,11 +84,11 @@ public class CustomTeaFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-
-        dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+//        DisplayMetrics metrics = getResources().getDisplayMetrics();
+//        int width = metrics.widthPixels;
+//        int height = metrics.heightPixels;
+//
+//        dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
         dialog.setTitle("Custom");
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         return dialog;
@@ -105,12 +99,12 @@ public class CustomTeaFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-
-        Dialog yourDialog = getDialog();
-        yourDialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+//        DisplayMetrics metrics = getResources().getDisplayMetrics();
+//        int width = metrics.widthPixels;
+//        int height = metrics.heightPixels;
+//
+//        Dialog yourDialog = getDialog();
+//        yourDialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
 
         View view = inflater.inflate(R.layout.fragment_custom_tea, container, false);
 
