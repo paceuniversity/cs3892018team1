@@ -2,14 +2,27 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:weightSum="2">
 
         <TextView
             android:id="@+id/recipeName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center"
+            android:layout_weight="1"
             android:gravity="left"
+            android:padding="8dp"
+            android:text="test"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/recipeTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center"
+            android:layout_weight="1"
+            android:gravity="right"
             android:padding="8dp"
             android:text="test"
             android:textSize="15sp" />

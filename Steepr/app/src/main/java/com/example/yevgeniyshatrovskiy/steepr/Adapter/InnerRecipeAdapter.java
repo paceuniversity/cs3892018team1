@@ -19,6 +19,7 @@ import com.example.yevgeniyshatrovskiy.steepr.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.InnerRecipeViewHolder>{
 
@@ -31,14 +32,24 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
 
         private TextView rName;
+        private TextView rTime;
         public RecyclerView innerRecyclerView;
 
 
         public InnerRecipeViewHolder(View itemView){
             super(itemView);
             rName = itemView.findViewById(R.id.recipeName);
+            rTime = itemView.findViewById(R.id.recipeTime);
             innerRecyclerView = itemView.findViewById(R.id.innerRecipeRecycler);
             Log.v("RV", "rNAME");
+        }
+
+        public TextView getrTime() {
+            return rTime;
+        }
+
+        public void setrTime(TextView rTime) {
+            this.rTime = rTime;
         }
 
         public TextView getrName() {
@@ -82,6 +93,12 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
             holder.setrName(recipe.get(position).getName());
         else
             holder.setrName(recipe.get(position).getChineseName());
+
+
+        setText(holder,position);
+        holder.getrTime().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
+        holder.getrTime().setTextColor(Color.parseColor(recipe.get(position).getBackGroundColor()));
+
         holder.getrName().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
         holder.getrName().setTextColor(Color.parseColor(recipe.get(position).getBackGroundColor()));
     }
@@ -89,6 +106,20 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
     @Override
     public int getItemCount() {
         return this.recipe.size();
+
+    }
+
+    public void setText(InnerRecipeViewHolder holder, int position){
+
+//        long msteepTimeInMiliseconds = (long)recipe.get(position).getSecondsToSteep();
+        long msteepTimeInMiliseconds = (long)recipe.get(position).getSecondsToSteep() * 1000;
+        int minutes = (int) (msteepTimeInMiliseconds / 1000) / 60;
+        int seconds = (int) (msteepTimeInMiliseconds / 1000) % 60;
+        Log.v("UPDATE", ":" + msteepTimeInMiliseconds);
+        String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
+//        holder.setrTime(timeLeftFormatted);
+        holder.getrTime().setText(timeLeftFormatted);
+//        mCountDownText.setText(timeLeftFormatted);
 
     }
 

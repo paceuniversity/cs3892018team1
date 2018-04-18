@@ -40,6 +40,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     protected Context context;
     private LinearLayoutManager lln;
     public int mExpandedPosition = -1;
+    public int previousExpandedPosition = -1;
     public boolean english;
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder{
@@ -127,21 +128,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.innerRecyclerView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
 
+        if (isExpanded)
+            previousExpandedPosition = position;
+
         Button button = holder.itemView.findViewById(R.id.openButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mExpandedPosition = isExpanded ? -1:position;
+                notifyItemChanged(previousExpandedPosition);
                 notifyItemChanged(position);
             }
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mExpandedPosition = isExpanded ? -1:position;
-                notifyItemChanged(position);
-            }
-        });
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mExpandedPosition = isExpanded ? -1:position;
+//                notifyItemChanged(position);
+//            }
+//        });
     }
 
     @Override
