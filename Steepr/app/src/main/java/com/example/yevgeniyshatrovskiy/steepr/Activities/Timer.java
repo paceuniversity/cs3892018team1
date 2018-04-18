@@ -49,24 +49,33 @@ public class Timer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
+        mCountDownText = findViewById(R.id.textViewCountdown);
 
         String jsonObject;
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             jsonObject = bundle.getString("reci");
             rec = new Gson().fromJson(jsonObject, Recipe.class);
-            msteepTimeInMiliseconds = (long)rec.getSecondsToSteep() * 1000;
+            msteepTimeInMiliseconds = (long)bundle.getInt("time") * 1000;
+            Log.v("HERE", ":" + msteepTimeInMiliseconds);
             english = bundle.getBoolean("english");
         }else{
             //default 1 Minute
+            Log.v("HERE", "HERE");
             msteepTimeInMiliseconds = (long)60 * 1000;
         }
 
         textTitle = findViewById(R.id.textTitle);
+        mButtonStart = findViewById(R.id.buttonStart);
+        mButtonStop = findViewById(R.id.buttonStop);
         if(english){
             textTitle.setText(rec.getName());
+            mButtonStart.setText("Start");
+            mButtonStop.setText("Stop");
         }else{
             textTitle.setText(rec.getChineseName());
+            mButtonStart.setText("开始");
+            mButtonStop.setText("停止");
         }
 
         imageLayout = findViewById(R.id.topLayout);
@@ -90,12 +99,13 @@ public class Timer extends AppCompatActivity {
         mainImage.setImageDrawable(draw);
 
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
+        updateCountDownTime();
         Log.v(mtimeLeftInMiliseconds+"", "TIMER2");
-        mCountDownText = findViewById(R.id.textViewCountdown);
+//        mCountDownText = findViewById(R.id.textViewCountdown);
 
         mButtonStart = findViewById(R.id.buttonStart);
         mButtonStop = findViewById(R.id.buttonStop);
-        updateCountDownTime();
+//        updateCountDownTime();
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,12 +124,18 @@ public class Timer extends AppCompatActivity {
             public void onClick(View v) {
                 Log.v("TIMER", "STOP");
                 if (mTimerOn){
-                    mButtonStop.setText("Reset");
+                    if(english){
+                        mButtonStop.setText("Reset");
+                    }else
+                        mButtonStop.setText("重启");
                     pauseTimer();
                     mTimerOn = false;
                 }else{
                     resetTimer();
-                    mButtonStop.setText("Stop");
+                    if(english)
+                        mButtonStop.setText("Stop");
+                    else
+                        mButtonStop.setText("停止");
                 }
 
             }
@@ -158,6 +174,7 @@ public class Timer extends AppCompatActivity {
         int minutes = (int) (mtimeLeftInMiliseconds / 1000) / 60;
         int seconds = (int) (mtimeLeftInMiliseconds / 1000) % 60;
 
+        Log.v("UPDATE", ":" + msteepTimeInMiliseconds);
         String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
         mCountDownText.setText(timeLeftFormatted);
 
@@ -182,15 +199,15 @@ public class Timer extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        mtimeLeftInMiliseconds = savedInstanceState.getLong("millisLeft");
-        mTimerOn = savedInstanceState.getBoolean("timerRunning");
-        updateCountDownTime();
-
-        if (mTimerOn) {
-            mEndTime = savedInstanceState.getLong("endTime");
-            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
-            startTimer();
-        }
+//        mtimeLeftInMiliseconds = savedInstanceState.getLong("millisLeft");
+//        mTimerOn = savedInstanceState.getBoolean("timerRunning");
+//        updateCountDownTime();
+//
+//        if (mTimerOn) {
+//            mEndTime = savedInstanceState.getLong("endTime");
+//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+//            startTimer();
+//        }
     }
 
 
@@ -198,43 +215,68 @@ public class Timer extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//
+//        editor.putLong("millisLeft", mtimeLeftInMiliseconds);
+//        editor.putBoolean("timerRunning", mTimerOff);
+//        editor.putLong("endTime", mEndTime);
+//
+//        editor.apply();
+//
+//        if (mCountDown != null) {
+//            mCountDown.cancel();
+//        }
 
-        editor.putLong("millisLeft", mtimeLeftInMiliseconds);
-        editor.putBoolean("timerRunning", mTimerOff);
-        editor.putLong("endTime", mEndTime);
+    }
 
-        editor.apply();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        if (mCountDown != null) {
-            mCountDown.cancel();
-        }
-
+//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//
+//        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
+//        Log.v("SAVED", ":" + msteepTimeInMiliseconds);
+//        mTimerOn = prefs.getBoolean("timerRunning", false);
+//
+//        updateCountDownTime();
+//
+//        if (mTimerOn) {
+//            mEndTime = prefs.getLong("endTime", 0);
+//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+//
+//            if (mtimeLeftInMiliseconds < 0) {
+//                mtimeLeftInMiliseconds = 0;
+//                mTimerOn = false;
+//            } else {
+//                startTimer();
+//            }
+//        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-
-        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
-        mTimerOn = prefs.getBoolean("timerRunning", false);
-
-        updateCountDownTime();
-
-        if (mTimerOn) {
-            mEndTime = prefs.getLong("endTime", 0);
-            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
-
-            if (mtimeLeftInMiliseconds < 0) {
-                mtimeLeftInMiliseconds = 0;
-                mTimerOn = false;
-            } else {
-                startTimer();
-            }
-        }
+//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//
+//        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
+//        mTimerOn = prefs.getBoolean("timerRunning", false);
+//
+//        updateCountDownTime();
+//
+//        if (mTimerOn) {
+//            mEndTime = prefs.getLong("endTime", 0);
+//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+//
+//            if (mtimeLeftInMiliseconds < 0) {
+//                mtimeLeftInMiliseconds = 0;
+//                mTimerOn = false;
+//            } else {
+//                startTimer();
+//            }
+//        }
     }
 
     //Not my code, found example on stackexchange
