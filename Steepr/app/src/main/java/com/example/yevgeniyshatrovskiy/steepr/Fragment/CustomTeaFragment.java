@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,11 @@ public class CustomTeaFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+        dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
         dialog.setTitle("Custom");
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
         return dialog;
@@ -98,7 +104,17 @@ public class CustomTeaFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+        Dialog yourDialog = getDialog();
+        yourDialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+
         View view = inflater.inflate(R.layout.fragment_custom_tea, container, false);
+
+
         //Find the +1 button
         mPlusOneButton = view.findViewById(R.id.plus_one_button);
         mPlusOneButton.setHint("Test");
