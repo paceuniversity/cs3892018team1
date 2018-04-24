@@ -291,13 +291,11 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recipeRecycler.getContext(), lln.getOrientation());
 
             recipeRecycler.addItemDecoration(new VertSpace(0));
-            if(count == 0)
-                recipeRecycler.setLayoutAnimation(controller);
+            recipeRecycler.setLayoutAnimation(controller);
             recipeAdapter = new RecipeAdapter(MainActivity.this, finalDetails, finalAllRec, english,
                     userID, names);
             recipeRecycler.setAdapter(recipeAdapter);
-            if(count == 0)
-                recipeRecycler.scheduleLayoutAnimation();
+            recipeRecycler.scheduleLayoutAnimation();
             count++;
 
         }catch (Exception e){
