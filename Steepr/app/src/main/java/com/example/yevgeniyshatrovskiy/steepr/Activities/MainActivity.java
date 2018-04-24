@@ -1,37 +1,30 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
-import android.app.DialogFragment;
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.solver.widgets.Snapshot;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
-import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomTeaFragment;
+import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomFragment;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.DualList;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
@@ -50,12 +43,11 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener
 
-public class MainActivity extends AppCompatActivity implements CustomTeaFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CustomFragment.OnFragmentInteractionListener {
 
     FirebaseRecyclerAdapter adapter;
     FirebaseRecyclerOptions<Recipe> options;
@@ -80,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
     DatabaseReference favRef = database.child("users");
     ChildEventListener listener;
     ChildEventListener favListener;
+    ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
         mAuth = FirebaseAuth.getInstance();
         allRecipe = new ArrayList<Recipe>();
 
+        bar = findViewById(R.id.progressBar);
+        bar.setVisibility(View.VISIBLE);
+        recipeRecycler.setVisibility(View.GONE);
         recipeRecycler.setHasFixedSize(true);
         recipeRecycler.setLayoutManager(new GridLayoutManager(this, 1));
         recipeRecycler.invalidate();
@@ -261,7 +257,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
     public void refreshList() {
 
+
         ArrayList<String> names = new ArrayList<>();
+//        recipeRecycler.setVisibility(View.GONE);
 
         ArrayList<TeaDetails> finalDetails = new ArrayList<>();
         ArrayList<TeaCategory> finalAllRec = new ArrayList<>();
@@ -299,6 +297,10 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
             recipeRecycler.setAdapter(recipeAdapter);
             recipeRecycler.scheduleLayoutAnimation();
             count++;
+            recipeRecycler.setVisibility(View.VISIBLE);
+            bar.setVisibility(View.GONE);
+
+
 
         }catch (Exception e){
             e.printStackTrace();
@@ -335,12 +337,17 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restartListener();
+    }
+
     public void showDialog() {
-        DialogFragment newFragment = CustomTeaFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putString("userID", userID);
-        newFragment.setArguments(bundle);
-        newFragment.show(getFragmentManager(), "dialog");
+        FragmentTransaction fragmentTransaction  = getSupportFragmentManager().beginTransaction();
+        CustomFragment fragment = new CustomFragment();
+        fragmentTransaction.add(R.id.fragment, fragment).addToBackStack("Test").commit();
+
         myRef.removeEventListener(listener);
         favRef.child(userID).removeEventListener(favListener);
         Log.v("LISTENER", "Removed");

@@ -142,21 +142,22 @@ public class Timer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.v("TIMER", "STOP");
-                if (mTimerOn){
-                    if(english){
-                        mButtonStop.setText("Reset");
-                    }else
-                        mButtonStop.setText("重启");
-                    pauseTimer();
-                    mTimerOn = false;
-                }else{
-                    resetTimer();
-                    if(english)
-                        mButtonStop.setText("Stop");
-                    else
-                        mButtonStop.setText("停止");
+                if(msteepTimeInMiliseconds != mtimeLeftInMiliseconds){
+                    if (mTimerOn){
+                        if(english){
+                            mButtonStop.setText("Reset");
+                        }else
+                            mButtonStop.setText("重启");
+                        pauseTimer();
+                        mTimerOn = false;
+                    }else{
+                        resetTimer();
+                        if(english)
+                            mButtonStop.setText("Stop");
+                        else
+                            mButtonStop.setText("停止");
+                    }
                 }
-
             }
         });
 
@@ -204,13 +205,6 @@ public class Timer extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (favorite) {
-            Log.v("ID", "Heart");
-//            if(english)
-//                item.setIcon(R.drawable.chineselogo);
-//            else
-//                item.setIcon(R.drawable.englishlogo);
-
-//            changeLanguage();
             removeFavorite(rec);
             favorite = false;
             return true;
@@ -220,8 +214,6 @@ public class Timer extends AppCompatActivity {
             favorite = true;
             return true;
         }
-
-//        return super.onOptionsItemSelected(item);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
