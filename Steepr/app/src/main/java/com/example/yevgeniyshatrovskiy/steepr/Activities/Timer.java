@@ -1,5 +1,6 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +23,10 @@ import android.widget.TextView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.Locale;
@@ -47,6 +54,7 @@ public class Timer extends AppCompatActivity {
     private TextView textDescription;
     private TextView textTemperature;
     private boolean english;
+    private boolean favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,7 @@ public class Timer extends AppCompatActivity {
             jsonObject = bundle.getString("reci");
             rec = new Gson().fromJson(jsonObject, Recipe.class);
             msteepTimeInMiliseconds = (long)bundle.getInt("time") * 1000;
+            favorite = (boolean)bundle.get("fav");
             Log.v("HERE", ":" + msteepTimeInMiliseconds);
             english = bundle.getBoolean("english");
         }else{
@@ -153,6 +162,81 @@ public class Timer extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        this.invalidateOptionsMenu();
+        super.onBackPressed();
+    }
+
+    public void addFavorite(Recipe rep){
+        rep.setCategory("Favorite");
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference myRef = database.child("users");
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        String userID = firebaseUser.getUid();
+        myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
+
+////                Recipe rep = new Recipe("Awesome", "Weird", 60, null,
+////                        "greentea","Favorite", "#ffffff","greentea",
+////                        "#BD8300","茶","茶");
+////                myRef.child(userID).child("Favorites").child(rep.getName()).removeValue();
+//
+////                Log.v("REC:",  teaCategories.get(position).getRecipes().get(position);
+        this.invalidateOptionsMenu();
+    }
+
+    public void removeFavorite(Recipe rep){
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference myRef = database.child("users");
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        String userID = firebaseUser.getUid();
+        myRef.child(userID).child("Favorites").child(rep.getName()).removeValue();
+        this.invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (favorite) {
+            Log.v("ID", "Heart");
+//            if(english)
+//                item.setIcon(R.drawable.chineselogo);
+//            else
+//                item.setIcon(R.drawable.englishlogo);
+
+//            changeLanguage();
+            removeFavorite(rec);
+            favorite = false;
+            return true;
+        }else{
+            Log.v("ID", "No Heart");
+            addFavorite(rec);
+            favorite = true;
+            return true;
+        }
+
+//        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.time, menu);
+        if(favorite){
+            menu.getItem(0).setIcon(R.drawable.heart);
+        }else{
+            menu.getItem(0).setIcon(R.drawable.emptyheart);
+        }
+        return true;
+    }
+
+
+
     private void startTimer() {
         mCountDown = new CountDownTimer(mtimeLeftInMiliseconds, 1000) {
             @Override
@@ -179,6 +263,8 @@ public class Timer extends AppCompatActivity {
             mTimerOn = false;
         }
     }
+
+
 
     private void updateCountDownTime(){
         int minutes = (int) (mtimeLeftInMiliseconds / 1000) / 60;
@@ -219,6 +305,7 @@ public class Timer extends AppCompatActivity {
 //            startTimer();
 //        }
     }
+
 
 
     @Override

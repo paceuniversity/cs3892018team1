@@ -36,6 +36,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
     private InnerRecipeAdapter.InnerRecipeViewHolder viewHolder;
     public Map<Integer,Recipe> test = new HashMap<>();
     public View layout;
+    public boolean favorite;
 
 
     public static class InnerRecipeViewHolder extends RecyclerView.ViewHolder{
@@ -111,6 +112,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final InnerRecipeViewHolder holder, final int position) {
+        favorite = false;
         Log.v("TESTER", recipe.get(position).getName());
 
         if(english)
@@ -127,11 +129,14 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.v("TEST", test.get(pos).getName());
-                float timeToSteep = test.get(pos).getSecondsToSteep();
-                ((MainActivity)context).beginTimerActivity(test.get(pos), v);
-
+                favorite = false;
+                if(favs.contains(test.get(pos).getName()))
+                    favorite = true;
+                Log.v("VAF", test.get(pos).getName());
+                Log.v("VAF", test.get(pos).getCategory());
+                Log.v("VAF", favorite + " :");
+//                float timeToSteep = test.get(pos).getSecondsToSteep();
+                ((MainActivity)context).beginTimerActivity(test.get(pos), v, favorite);
             }
         });
 
@@ -144,8 +149,12 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
         holder.getrHeart().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
 
-        if(favs.contains(recipe.get(position).getName()))
+        if(favs.contains(recipe.get(position).getName())){
+            favorite = true;
+            Log.v("VAFX++", recipe.get(position).getName());
             holder.getrHeart().setImageResource(R.drawable.heart);
+        }
+
 
     }
 

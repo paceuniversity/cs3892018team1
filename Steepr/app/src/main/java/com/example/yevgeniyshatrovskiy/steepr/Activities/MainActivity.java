@@ -287,9 +287,6 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
             }
 
 
-
-
-
             final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
             LinearLayoutManager lln = new GridLayoutManager(this,1);
 
@@ -397,8 +394,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
     }
 
 
-    public void beginTimerActivity(Recipe re, View view){
+    public void beginTimerActivity(Recipe re, View view, boolean fav){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
+        newIntent.putExtra("fav", fav);
         newIntent.putExtra("reci", new Gson().toJson(re));
         newIntent.putExtra("english", english);
         newIntent.putExtra("time", re.getSecondsToSteep());
