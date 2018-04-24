@@ -11,6 +11,7 @@ public class Recipe {
     private String name;
     private String description;
     private int secondsToSteep;
+    private int temperature;
     private ArrayList<String> ingredients = new ArrayList();
     private String imageURL;
     private String category;
@@ -20,13 +21,14 @@ public class Recipe {
     private String chineseCategory;
     private String chineseName;
 
-    public Recipe(String name, String description, int secondsToSteep,
+    public Recipe(String name, String description, int secondsToSteep, int temperature,
                   ArrayList<String> ingredients, String imageURL, String category,
                   String backGroundColor, String backGroundImage, String textColor,
                   String chineseCategory, String chineseName) {
         this.name = name;
         this.description = description;
         this.secondsToSteep = secondsToSteep;
+        this.temperature = temperature;
         this.ingredients = ingredients;
         this.imageURL = imageURL;
         this.category = category;
@@ -44,10 +46,11 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public Recipe(String name, String description, int secondsToSteep, ArrayList<String> ingredients, String imageURL, String category, String backGroundColor, String backGroundImage, String textColor) {
+    public Recipe(String name, String description, int secondsToSteep, int temperature, ArrayList<String> ingredients, String imageURL, String category, String backGroundColor, String backGroundImage, String textColor) {
         this.name = name;
         this.description = description;
         this.secondsToSteep = secondsToSteep;
+        this.temperature = temperature;
         this.ingredients = ingredients;
         this.imageURL = imageURL;
         this.category = category;
@@ -137,6 +140,14 @@ public class Recipe {
         this.secondsToSteep = secondsToSteep;
     }
 
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
     public ArrayList<String> getIngredients() {
         return ingredients;
     }
@@ -159,6 +170,7 @@ public class Recipe {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", secondsToSteep=" + secondsToSteep +
+                ", temperature=" + temperature +
                 ", ingredients=" + ingredients +
                 ", imageURL='" + imageURL + '\'' +
                 ", category='" + category + '\'' +
