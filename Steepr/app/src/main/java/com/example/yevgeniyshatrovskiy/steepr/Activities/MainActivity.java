@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +19,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -29,6 +32,7 @@ import android.widget.RelativeLayout;
 
 import com.example.yevgeniyshatrovskiy.steepr.Adapter.RecipeAdapter;
 import com.example.yevgeniyshatrovskiy.steepr.Fragment.CustomTeaFragment;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.DualList;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaDetails;
@@ -46,13 +50,13 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 //public class MainActivity extends AppCompatActivity
 //        implements NavigationView.OnNavigationItemSelectedListener
 
 public class MainActivity extends AppCompatActivity implements CustomTeaFragment.OnFragmentInteractionListener {
 
-    private FirebaseAuth mAuth;
     FirebaseRecyclerAdapter adapter;
     FirebaseRecyclerOptions<Recipe> options;
     RecyclerView recipeRecycler;
@@ -63,11 +67,19 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
     private android.widget.RelativeLayout.LayoutParams layoutParams;
     int x_cord;
     int y_cord;
+    int count = 0;
+    FirebaseAuth mAuth;
+    String userID;
+    DualList favorites;
+    DualList common;
+
 
     //Test Database (Works)
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     DatabaseReference myRef = database.child("all");
+    DatabaseReference favRef = database.child("users");
     ChildEventListener listener;
+    ChildEventListener favListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +87,12 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mAuth = FirebaseAuth.getInstance();
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        userID = firebaseUser.getUid();
 
 //        NavigationView navigationView = findViewById(R.id.nav_view);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -86,26 +103,14 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
             }
         });
 
-
-
-
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-
-//        navigationView.setNavigationItemSelectedListener(this);
-
         recipeRecycler = findViewById(R.id.recipeRecycler);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         allRecipe = new ArrayList<Recipe>();
 
         recipeRecycler.setHasFixedSize(true);
         recipeRecycler.setLayoutManager(new GridLayoutManager(this, 1));
-
+        recipeRecycler.invalidate();
 
         createListener();
 
@@ -113,21 +118,62 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
     public void createListener(){
 
+        favListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.v("FAV", "ADDED");
+                favorites = getAllTask(dataSnapshot);
+                refreshList();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.v("FAV", "CHANGED");
+                favorites = null;
+                favorites = getAllTask(dataSnapshot);
+                refreshList();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.v("DELETEDM", "DELETED");
+//                removeItems(dataSnapshot);
+                favorites = null;
+                refreshList();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        favRef.child(userID).addChildEventListener(favListener);
+
         listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                getAllTask(dataSnapshot);
-                Log.v("GET", "GET ALL");
+                common = getAllTask(dataSnapshot);
+                refreshList();
+                Log.v("FAVF", "GET ALL");
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 allRecipe.removeAll(allRecipe);
-                getAllTask(dataSnapshot);
-                Log.v("CHANGED", "CHANGED");
+                common = getAllTask(dataSnapshot);
+                refreshList();
+                Log.v("FAVF", "CHANGED");
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.v("DELETED", "DELETED");
+                Log.v("FAVF", "DELETED");
+//                removeItems(dataSnapshot);
+
             }
 
             @Override
@@ -143,13 +189,38 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
     }
 
-    private void getAllTask(DataSnapshot dataSnapshot){
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+//    public void removeItems(DataSnapshot dataSnapshot){
+//        for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+//            Recipe rec = singleSnapshot.getValue(Recipe.class);
+//            for(TeaCategory cat : favorites.getAllRec()){
+//                for(Recipe rep : cat.getRecipes()){
+//                    if(rep.getCategory().equals(rec.getCategory())){
+//
+//                    }
+//                }
+//            }
+//
+//            myRef.removeEventListener(listener);
+//            favRef.child(userID).removeEventListener(favListener);
+//            restartListener();
+//        }
+//    }
+
+    private DualList getAllTask(DataSnapshot dataSnapshot){
 
         boolean missing;
+
         ArrayList<TeaDetails> details = new ArrayList<>();
         ArrayList<TeaCategory> allRec = new ArrayList<>();
+
         for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
             Recipe rec = singleSnapshot.getValue(Recipe.class);
+//            Log.v("FAV", rec.getCategory());
             missing = true;
 
             if(details.isEmpty()){
@@ -171,30 +242,68 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
                 allRec.add(new TeaCategory(rec));
             }
 
-            for(TeaCategory re : allRec){
-                Log.v("CONTEXT", re.toString());
-            }
+//            for(TeaCategory re : allRec){
+//                Log.v("CONTEXT", re.toString());
+//            }
 
             for(TeaCategory cat : allRec){
                 if(cat.getCategoryName().equals(rec.getCategory()) && !(cat.getRecipes().contains(rec))){
                     cat.addRecipes(rec);
-                    Log.v("ADDED", rec.getName());
+//                    Log.v("ADDED", rec.getName());
                 }
-                Log.v("ADDING", rec.getName() + " " +cat.getCategoryName());
+//                Log.v("ADDING", rec.getName() + " " +cat.getCategoryName());
             }
         }
 
+        return new DualList(details, allRec);
 
-        final LayoutAnimationController controller =
-                AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
-        LinearLayoutManager lln = new GridLayoutManager(this,1);
+    }
+
+    public void refreshList() {
+
+        ArrayList<TeaDetails> finalDetails = new ArrayList<>();
+        ArrayList<TeaCategory> finalAllRec = new ArrayList<>();
+        try{
+
+            try{
+                finalDetails.addAll(favorites.getDetails());
+                finalAllRec.addAll(favorites.getAllRec());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            try{
+                finalDetails.addAll(common.getDetails());
+                finalAllRec.addAll(common.getAllRec());
+            }catch (Exception e){
+
+            }
+
+            ArrayList<String> names = new ArrayList<>();
+
+            for(Recipe rep : favorites.getAllRec().get(0).getRecipes()){
+                names.add(rep.getName());
+            }
+
+            final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
+            LinearLayoutManager lln = new GridLayoutManager(this,1);
 
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recipeRecycler.getContext(), lln.getOrientation());
-        recipeRecycler.addItemDecoration(new VertSpace(0));
-        recipeRecycler.setLayoutAnimation(controller);
-        recipeAdapter = new RecipeAdapter(MainActivity.this, details, allRec, english);
-        recipeRecycler.setAdapter(recipeAdapter);
-        recipeRecycler.scheduleLayoutAnimation();
+
+            recipeRecycler.addItemDecoration(new VertSpace(0));
+            if(count == 0)
+                recipeRecycler.setLayoutAnimation(controller);
+            recipeAdapter = new RecipeAdapter(MainActivity.this, finalDetails, finalAllRec, english,
+                    userID, names);
+            recipeRecycler.setAdapter(recipeAdapter);
+            if(count == 0)
+                recipeRecycler.scheduleLayoutAnimation();
+            count++;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -228,13 +337,18 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
     public void showDialog() {
         DialogFragment newFragment = CustomTeaFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString("userID", userID);
+        newFragment.setArguments(bundle);
         newFragment.show(getFragmentManager(), "dialog");
         myRef.removeEventListener(listener);
+        favRef.child(userID).removeEventListener(favListener);
         Log.v("LISTENER", "Removed");
     }
 
     public void restartListener(){
         myRef.addChildEventListener(listener);
+        favRef.child(userID).addChildEventListener(favListener);
     }
 
     @Override
@@ -279,41 +393,12 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
         return super.onOptionsItemSelected(item);
     }
 
-//    @SuppressWarnings("StatementWithEmptyBody")
-//    @Override
-//    public boolean onNavigationItemSelected(MenuItem item) {
-//        // Handle navigation view item clicks here.
-//        int id = item.getItemId();
-//
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
-//
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
 
     public void beginTimerActivity(Recipe re, View view){
         Intent newIntent = new Intent(MainActivity.this, Timer.class);
         newIntent.putExtra("reci", new Gson().toJson(re));
         newIntent.putExtra("english", english);
         newIntent.putExtra("time", re.getSecondsToSteep());
-//        ImageView image = findViewById(R.id.imageBackground);
-//        image.setBackgroundResource(R.drawable.whitetea);
-//        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
-//                (this, view.findViewById(R.id.teaBackground), "myImage");
-//        startActivity(newIntent, options.toBundle());
         startActivity(newIntent);
     }
 }

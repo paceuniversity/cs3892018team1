@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
@@ -18,14 +20,21 @@ import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.InnerRecipeViewHolder>{
 
-    private List<Recipe> recipe;
+    public static List<Recipe> recipe;
     protected Context context;
     public boolean english;
+    private ArrayList<String> favs;
+    private InnerRecipeAdapter.InnerRecipeViewHolder viewHolder;
+    public Map<Integer,String> test = new HashMap<>();
 
 
     public static class InnerRecipeViewHolder extends RecyclerView.ViewHolder{
@@ -33,6 +42,7 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
         private TextView rName;
         private TextView rTime;
+        private ImageView rHeart;
         public RecyclerView innerRecyclerView;
 
 
@@ -40,8 +50,17 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
             super(itemView);
             rName = itemView.findViewById(R.id.recipeName);
             rTime = itemView.findViewById(R.id.recipeTime);
+            rHeart = itemView.findViewById(R.id.heart);
             innerRecyclerView = itemView.findViewById(R.id.innerRecipeRecycler);
-            Log.v("RV", "rNAME");
+
+        }
+
+        public ImageView getrHeart() {
+            return rHeart;
+        }
+
+        public void setrHeart(ImageView rHeart) {
+            this.rHeart = rHeart;
         }
 
         public TextView getrTime() {
@@ -62,38 +81,48 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         }
     }
 
-    public InnerRecipeAdapter(Context context, ArrayList<Recipe> recipeList, boolean english){
+    public InnerRecipeAdapter(Context context, ArrayList<Recipe> recipeList, boolean english, ArrayList<String> favorites){
         this.recipe = recipeList;
         this.context = context;
         this.english = english;
+        this.favs = favorites;
     }
-
 
     @NonNull
     @Override
     public InnerRecipeAdapter.InnerRecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent, false);
-        final InnerRecipeAdapter.InnerRecipeViewHolder viewHolder = new InnerRecipeAdapter.InnerRecipeViewHolder(layout);
+        viewHolder = new InnerRecipeAdapter.InnerRecipeViewHolder(layout);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
                 float timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
                 ((MainActivity)context).beginTimerActivity(recipe.get(viewHolder.getAdapterPosition()), v);
+
             }
         });
 
         return viewHolder;
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull InnerRecipeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final InnerRecipeViewHolder holder, final int position) {
         Log.v("TESTER", recipe.get(position).getName());
+
         if(english)
             holder.setrName(recipe.get(position).getName());
         else
             holder.setrName(recipe.get(position).getChineseName());
 
+
+        final int pos = position;
+        Log.v("TEST1", recipe.get(position).getName());
+        Log.v("TEST2", pos + " ");
+        test.put(pos, recipe.get(position).getName());
 
         setText(holder,position);
         holder.getrTime().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
@@ -101,12 +130,22 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
 
         holder.getrName().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
         holder.getrName().setTextColor(Color.parseColor(recipe.get(position).getBackGroundColor()));
+
+        holder.getrHeart().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
+
+        if(favs.contains(recipe.get(position).getName()))
+            holder.getrHeart().setImageResource(R.drawable.heart);
+
     }
 
     @Override
     public int getItemCount() {
         return this.recipe.size();
 
+    }
+
+    public void remove(Recipe rec){
+        recipe.remove(rec);
     }
 
     public void setText(InnerRecipeViewHolder holder, int position){

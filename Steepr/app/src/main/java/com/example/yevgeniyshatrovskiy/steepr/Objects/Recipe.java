@@ -19,6 +19,7 @@ public class Recipe {
     private String textColor;
     private String chineseCategory;
     private String chineseName;
+    private int temperature;
 
     public Recipe(String name, String description, int secondsToSteep,
                   ArrayList<String> ingredients, String imageURL, String category,
@@ -56,6 +57,13 @@ public class Recipe {
         this.textColor = textColor;
     }
 
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
 
     public String getChineseCategory() {
         return chineseCategory;

@@ -6,13 +6,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
+import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A fragment with a Google +1 button.
@@ -35,6 +40,8 @@ public class CustomTeaFragment extends DialogFragment {
     private String mParam1;
     private String mParam2;
     private Button mPlusOneButton;
+    private String userID;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,7 +83,9 @@ public class CustomTeaFragment extends DialogFragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+
 
 
     }
@@ -97,6 +106,14 @@ public class CustomTeaFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        userID = getArguments().getString("userID");
+        if(userID != null)
+            Log.v("FRAG", userID);
+        else
+            Log.v("FRAG", "ITS NULL");
+
+
         // Inflate the layout for this fragment
 
 //        DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -109,6 +126,8 @@ public class CustomTeaFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_custom_tea, container, false);
 
 
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
         //Find the +1 button
         mPlusOneButton = view.findViewById(R.id.plus_one_button);
         mPlusOneButton.setHint("Test");
@@ -116,11 +135,18 @@ public class CustomTeaFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
 
-//                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-//                DatabaseReference myRef = database.child("all");
-//                Recipe rep = new Recipe("Custom", "Weird", 60, null, "greentea","Green", "#ffffff","greentea",
-//                        "#BD8300","茶","茶");
-//                myRef.child("Public").child(rep.getName()).setValue(rep);
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference myRef = database.child("users");
+                Recipe rep = new Recipe("Awesome", "Weird", 60, null, "greentea","Favorite", "#ffffff","greentea",
+                        "#BD8300","茶","茶");
+
+                Recipe rep2 = new Recipe("Awesome2", "Weird", 60, null,
+                        "greentea","Favorite", "#ffffff","greentea",
+                        "#BD8300","茶","茶");
+
+                myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
+                myRef.child(userID).child("Favorites").child(rep2.getName()).setValue(rep2);
+//                myRef.child(userID).child("Favorites").child(rep.getName()).removeValue();
                 ((MainActivity)getActivity()).restartListener();
                 dismiss();
             }
