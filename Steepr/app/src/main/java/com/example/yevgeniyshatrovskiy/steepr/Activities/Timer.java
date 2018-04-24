@@ -44,6 +44,8 @@ public class Timer extends AppCompatActivity {
     private LinearLayout entireLayout;
     private ImageView mainImage;
     private TextView textTitle;
+    private TextView textDescription;
+    private TextView textTemperature;
     private boolean english;
 
     @Override
@@ -65,6 +67,13 @@ public class Timer extends AppCompatActivity {
             Log.v("HERE", "HERE");
             msteepTimeInMiliseconds = (long)60 * 1000;
         }
+
+        textDescription = findViewById(R.id.textDescription);
+        textDescription.setText(rec.getDescription());
+
+        textTemperature = findViewById(R.id.textTemperature);
+        textTemperature.setText("Steep Temperature: " + Integer.toString(rec.getTemperature()) + "°F"); //To be honest I'm not sure if it's correct practice.
+
 
         textTitle = findViewById(R.id.textTitle);
         mButtonStart = findViewById(R.id.buttonStart);
