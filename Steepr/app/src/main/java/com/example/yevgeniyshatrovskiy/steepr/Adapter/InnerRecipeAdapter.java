@@ -34,7 +34,8 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
     public boolean english;
     private ArrayList<String> favs;
     private InnerRecipeAdapter.InnerRecipeViewHolder viewHolder;
-    public Map<Integer,String> test = new HashMap<>();
+    public Map<Integer,Recipe> test = new HashMap<>();
+    public View layout;
 
 
     public static class InnerRecipeViewHolder extends RecyclerView.ViewHolder{
@@ -91,15 +92,14 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
     @NonNull
     @Override
     public InnerRecipeAdapter.InnerRecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent, false);
+        layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent, false);
         viewHolder = new InnerRecipeAdapter.InnerRecipeViewHolder(layout);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.v("CLICK TEST", recipe.get(viewHolder.getAdapterPosition()).getName());
-                float timeToSteep = recipe.get(viewHolder.getAdapterPosition()).getSecondsToSteep();
-                ((MainActivity)context).beginTimerActivity(recipe.get(viewHolder.getAdapterPosition()), v);
+
 
             }
         });
@@ -122,7 +122,18 @@ public class InnerRecipeAdapter extends RecyclerView.Adapter<InnerRecipeAdapter.
         final int pos = position;
         Log.v("TEST1", recipe.get(position).getName());
         Log.v("TEST2", pos + " ");
-        test.put(pos, recipe.get(position).getName());
+        test.put(pos, recipe.get(position));
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.v("TEST", test.get(pos).getName());
+                float timeToSteep = test.get(pos).getSecondsToSteep();
+                ((MainActivity)context).beginTimerActivity(test.get(pos), v);
+
+            }
+        });
 
         setText(holder,position);
         holder.getrTime().setBackgroundColor(Color.parseColor(recipe.get(position).getTextColor()));
