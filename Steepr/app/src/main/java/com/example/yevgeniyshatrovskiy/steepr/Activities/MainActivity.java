@@ -261,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
     public void refreshList() {
 
+        ArrayList<String> names = new ArrayList<>();
+
         ArrayList<TeaDetails> finalDetails = new ArrayList<>();
         ArrayList<TeaCategory> finalAllRec = new ArrayList<>();
         try{
@@ -268,6 +270,11 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
             try{
                 finalDetails.addAll(favorites.getDetails());
                 finalAllRec.addAll(favorites.getAllRec());
+
+                for(Recipe rep : favorites.getAllRec().get(0).getRecipes()){
+                    names.add(rep.getName());
+                }
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -279,11 +286,9 @@ public class MainActivity extends AppCompatActivity implements CustomTeaFragment
 
             }
 
-            ArrayList<String> names = new ArrayList<>();
 
-            for(Recipe rep : favorites.getAllRec().get(0).getRecipes()){
-                names.add(rep.getName());
-            }
+
+
 
             final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down);
             LinearLayoutManager lln = new GridLayoutManager(this,1);
