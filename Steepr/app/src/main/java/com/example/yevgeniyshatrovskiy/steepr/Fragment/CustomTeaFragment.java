@@ -137,15 +137,15 @@ public class CustomTeaFragment extends DialogFragment {
 
                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                 DatabaseReference myRef = database.child("users");
-                Recipe rep = new Recipe("Awesome", "Weird", 60, null, "greentea","Favorite", "#ffffff","greentea",
-                        "#BD8300","茶","茶");
+//                Recipe rep = new Recipe("Awesome", "Weird", 60, null, "greentea","Favorite", "#ffffff","greentea",
+//                        "#BD8300","茶","茶");
+//
+//                Recipe rep2 = new Recipe("Awesome2", "Weird", 60, null,
+//                        "greentea","Favorite", "#ffffff","greentea",
+//                        "#BD8300","茶","茶");
 
-                Recipe rep2 = new Recipe("Awesome2", "Weird", 60, null,
-                        "greentea","Favorite", "#ffffff","greentea",
-                        "#BD8300","茶","茶");
-
-                myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
-                myRef.child(userID).child("Favorites").child(rep2.getName()).setValue(rep2);
+//                myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
+//                myRef.child(userID).child("Favorites").child(rep2.getName()).setValue(rep2);
 //                myRef.child(userID).child("Favorites").child(rep.getName()).removeValue();
                 ((MainActivity)getActivity()).restartListener();
                 dismiss();

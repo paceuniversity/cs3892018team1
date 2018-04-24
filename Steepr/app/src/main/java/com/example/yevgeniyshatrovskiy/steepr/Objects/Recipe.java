@@ -11,7 +11,6 @@ public class Recipe {
     private String name;
     private String description;
     private int secondsToSteep;
-    private int temperature;
     private ArrayList<String> ingredients = new ArrayList();
     private String imageURL;
     private String category;
@@ -60,13 +59,6 @@ public class Recipe {
         this.textColor = textColor;
     }
 
-    public int getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
-    }
 
     public String getChineseCategory() {
         return chineseCategory;
