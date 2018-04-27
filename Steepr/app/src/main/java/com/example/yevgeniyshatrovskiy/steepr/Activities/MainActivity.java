@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
     String userID;
     DualList favorites;
     DualList common;
+    ArrayList<String> teaCategoriesForFragment;
 
 
     //Test Database (Works)
@@ -251,6 +252,19 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
             }
         }
 
+        Log.v("ADAPT3", allRec.get(0).getCategoryName());
+
+        if(!(allRec.get(0).getCategoryName().equals("Favorite"))){
+            teaCategoriesForFragment = new ArrayList<>();
+
+            for(TeaCategory tea : allRec){
+                teaCategoriesForFragment.add(tea.getCategoryName());
+                Log.v("ADAPTADD", tea.getCategoryName());
+            }
+        }
+
+
+
         return new DualList(details, allRec);
 
     }
@@ -346,6 +360,16 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
     public void showDialog() {
         FragmentTransaction fragmentTransaction  = getSupportFragmentManager().beginTransaction();
         CustomFragment fragment = new CustomFragment();
+
+//        MyFragmentClass mFrag = new MyFragmentClass();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("DocNum", docNum);   //parameters are (key, value).
+//        mFrag.setArguments(bundle);
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("categories", teaCategoriesForFragment);
+        fragment.setArguments(bundle);
+
         fragmentTransaction.add(R.id.fragment, fragment).addToBackStack("Test").commit();
 
         myRef.removeEventListener(listener);

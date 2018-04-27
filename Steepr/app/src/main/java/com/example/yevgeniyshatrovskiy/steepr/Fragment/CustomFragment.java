@@ -8,15 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
-import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +43,7 @@ public class CustomFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private Button submitButton;
+    private ArrayList<String> categories;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,6 +75,7 @@ public class CustomFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            categories = getArguments().getStringArrayList("categories");
         }
     }
 
@@ -75,34 +84,70 @@ public class CustomFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_custom, container, false);
+
+        final Spinner spinner = view.findViewById(R.id.spinner);
+        final Spinner tempSpinner = view.findViewById(R.id.tempSpinner);
+        ArrayList<String> tempList = new ArrayList<>();
+        tempList.add("F\u00B0");
+        tempList.add("C\u00B0");
+
+
+        ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(getContext(),
+                R.layout.spinner_item, tempList);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
+                R.layout.spinner_item, categories);
+
+        spinner.setAdapter(dataAdapter);
+        tempSpinner.setAdapter(tempAdapter);
+
+
+        //Input field
+        final EditText nameInput = view.findViewById(R.id.nameInput);
+        final EditText tempInput = view.findViewById(R.id.tempInput);
+        final EditText minInput = view.findViewById(R.id.minInput);
+        final EditText secInput = view.findViewById(R.id.secInput);
+        final EditText desInput = view.findViewById(R.id.desInput);
+
+
+        //Submit Form
         submitButton = view.findViewById(R.id.submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                getActivity().getSupportFragmentManager().beginTransaction().remove();
+                try{
+
+                    Recipe newRecipe = new Recipe();
+
+                    newRecipe.setCategory("Favorite");
+                    newRecipe.setName(nameInput.getText().toString());
+                    newRecipe.setTemperature(Integer.parseInt(tempInput.getText().toString()));
+                    int steepTime = ((Integer.parseInt(minInput.getText().toString())) * 60) +
+                            (Integer.parseInt(secInput.getText().toString()));
+                    newRecipe.setSecondsToSteep(steepTime);
+                    newRecipe.setDescription(desInput.getText().toString());
+                    newRecipe = determineImage(spinner.getSelectedItem().toString(),newRecipe);
+                    newRecipe.setChineseCategory("茶");
+                    newRecipe.setChineseName("茶");
+
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference myRef = database.child("users");
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    myRef.child(firebaseUser.getUid()).child("Favorites").child(newRecipe.getName()).setValue(newRecipe);
+                    getActivity().onBackPressed();
+
+                }catch (Exception e){
+                    Toast.makeText(getActivity(), "Please Fill All Fields",
+                            Toast.LENGTH_SHORT).show();
+//                    getActivity().onBackPressed();
+                }
+
+
+
             }
         });
-
-//        //Find the +1 button
-//        mPlusOneButton = view.findViewById(R.id.plus_one_button);
-//        mPlusOneButton.setHint("Test");
-//        mPlusOneButton.setOnClickListener(new View.OnClickListener() {
-
-//            @Override
-//            public void onClick(View v) {
-//                Recipe rep = new Recipe();
-//                rep.setCategory("Favorite");
-//                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-//                DatabaseReference myRef = database.child("users");
-//
-//                FirebaseAuth auth = FirebaseAuth.getInstance();
-//                FirebaseUser firebaseUser = auth.getCurrentUser();
-//                String userID = firebaseUser.getUid();
-//                myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
-//                ((MainActivity)getActivity()).restartListener();
-//            }
-//         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-//        });
         return view;
     }
 
@@ -110,6 +155,58 @@ public class CustomFragment extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    public Recipe determineImage(String name, Recipe rep){
+        Recipe recipe = new Recipe();
+        recipe = rep;
+        switch (name){
+            case "Black":
+                rep.setBackGroundImage("herbaltea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#4A453F");
+                return rep;
+            case "White":
+                rep.setBackGroundImage("whitetea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#AB9D85");
+                return rep;
+            case "Herbal":
+                rep.setBackGroundImage("herbaltea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#008000");
+                return rep;
+            case "Oolong":
+                rep.setBackGroundImage("oolongtea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#BD8300");
+                return rep;
+            case "Green":
+                rep.setBackGroundImage("greentea");
+                rep.setBackGroundColor("#f6F6F6");
+                rep.setTextColor("#008000");
+                return rep;
+            case "Yellow":
+                rep.setBackGroundImage("yellowtea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#BEB71E");
+                return rep;
+            case "Matcha":
+                rep.setBackGroundImage("greentea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#008000");
+                return rep;
+            case "Pu'er":
+                rep.setBackGroundImage("puerhtea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#352045");
+                return rep;
+            default:
+                rep.setBackGroundImage("greentea");
+                rep.setBackGroundColor("#ffffff");
+                rep.setTextColor("#008000");
+                return rep;
         }
     }
 
