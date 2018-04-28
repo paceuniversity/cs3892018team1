@@ -1,6 +1,11 @@
 package com.example.yevgeniyshatrovskiy.steepr.Activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
@@ -21,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.yevgeniyshatrovskiy.steepr.NotificationPublisher;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,8 +43,6 @@ public class Timer extends AppCompatActivity {
 
     private long msteepTimeInMiliseconds;
     private long mtimeLeftInMiliseconds;
-    private long mEndTime;
-
     private TextView mCountDownText;
 
     private CountDownTimer mCountDown;
@@ -45,7 +51,7 @@ public class Timer extends AppCompatActivity {
     private Button mButtonStop;
 
     private boolean mTimerOn = false;
-    private boolean mTimerOff;
+    long endTime;
     private Recipe rec;
     private LinearLayout imageLayout;
     private LinearLayout entireLayout;
@@ -55,12 +61,18 @@ public class Timer extends AppCompatActivity {
     private TextView textTemperature;
     private boolean english;
     private boolean favorite;
+    private long startTime;
+    private boolean firstStart;
+    SharedPreferences prefs;
+    private boolean used;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.timer);
         mCountDownText = findViewById(R.id.textViewCountdown);
+        Log.v("TTTT", "restart");
 
         String jsonObject;
         Bundle bundle = getIntent().getExtras();
@@ -68,6 +80,7 @@ public class Timer extends AppCompatActivity {
             jsonObject = bundle.getString("reci");
             rec = new Gson().fromJson(jsonObject, Recipe.class);
             msteepTimeInMiliseconds = (long)bundle.getInt("time") * 1000;
+            endTime = msteepTimeInMiliseconds + System.currentTimeMillis();
             favorite = (boolean)bundle.get("fav");
             Log.v("HERE", ":" + msteepTimeInMiliseconds);
             english = bundle.getBoolean("english");
@@ -120,16 +133,16 @@ public class Timer extends AppCompatActivity {
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
         updateCountDownTime();
         Log.v(mtimeLeftInMiliseconds+"", "TIMER2");
-//        mCountDownText = findViewById(R.id.textViewCountdown);
+        mCountDownText = findViewById(R.id.textViewCountdown);
 
         mButtonStart = findViewById(R.id.buttonStart);
         mButtonStop = findViewById(R.id.buttonStop);
-//        updateCountDownTime();
+        updateCountDownTime();
 
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("TIMER", "ON");
+                Log.v("TIMER", "CLICK");
                 if (!mTimerOn){
                     Log.v("TIMER", "TIMER ON");
                     startTimer();
@@ -230,12 +243,20 @@ public class Timer extends AppCompatActivity {
 
 
     private void startTimer() {
+        if(firstStart){
+            Log.v("TTTT", "startTimer");
+            startTime = System.currentTimeMillis();
+            endTime = msteepTimeInMiliseconds + System.currentTimeMillis();
+            firstStart = false;
+            scheduleNotification(getNotification("Steepr"), (int)mtimeLeftInMiliseconds);
+        }
         mCountDown = new CountDownTimer(mtimeLeftInMiliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished){
                 Log.v("TIMER", "ON TICK: " + millisUntilFinished);
                 mtimeLeftInMiliseconds = millisUntilFinished;
                 updateCountDownTime();
+                used = true;
 
             }
 
@@ -251,8 +272,10 @@ public class Timer extends AppCompatActivity {
 
     private void pauseTimer(){
         if (mTimerOn) {
+            endTime = 0;
             mCountDown.cancel();
             mTimerOn = false;
+            firstStart = true;
         }
     }
 
@@ -262,41 +285,49 @@ public class Timer extends AppCompatActivity {
         int minutes = (int) (mtimeLeftInMiliseconds / 1000) / 60;
         int seconds = (int) (mtimeLeftInMiliseconds / 1000) % 60;
 
-        Log.v("UPDATE", ":" + msteepTimeInMiliseconds);
+        Log.v("UPDATE", ":" + msteepTimeInMiliseconds + " " + System.currentTimeMillis());
         String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
         mCountDownText.setText(timeLeftFormatted);
 
     }
 
     private void resetTimer(){
-        mCountDown.cancel();
+        Log.v("TTTT", "reset");
+        endTime = 0;
+        mCountDown = null;
         mTimerOn = false;
         mtimeLeftInMiliseconds = msteepTimeInMiliseconds;
+        firstStart = true;
+        used = false;
         updateCountDownTime();
+        prefs = getSharedPreferences("prefs" + rec.getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear().commit();
+
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("millisLeft", mtimeLeftInMiliseconds);
-        outState.putBoolean("timerRunning", mTimerOn);
-        outState.putLong("endTime", mEndTime);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-//        mtimeLeftInMiliseconds = savedInstanceState.getLong("millisLeft");
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putLong("millisLeft", mtimeLeftInMiliseconds);
+//        outState.putBoolean("timerRunning", mTimerOn);
+//        outState.putLong("endTime", endTime);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
 //        mTimerOn = savedInstanceState.getBoolean("timerRunning");
+//        endTime = savedInstanceState.getLong("endTime");
 //        updateCountDownTime();
 //
 //        if (mTimerOn) {
-//            mEndTime = savedInstanceState.getLong("endTime");
-//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
+//            endTime = savedInstanceState.getLong("endTime");
+//            mtimeLeftInMiliseconds = endTime - System.currentTimeMillis();
 //            startTimer();
 //        }
-    }
+//    }
 
 
 
@@ -304,68 +335,129 @@ public class Timer extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        prefs = getSharedPreferences("prefs" + rec.getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if(used){
+            Log.v("TTTT", "onPause");
+
+            editor.putString("prev" + rec.getName(), "prev");
+            editor.putBoolean("used" + rec.getName(), used);
+            editor.putLong("remaining" + rec.getName(), mtimeLeftInMiliseconds);
+            editor.putLong("millisEnd" + rec.getName(), endTime).commit();
+            editor.putBoolean("first" + rec.getName(), firstStart);
+            editor.putBoolean("running" + rec.getName(), mTimerOn);
+
+            editor.commit();
+            if (mCountDown != null) {
+                mCountDown.cancel();
+            }
+        }else{
+            Log.v("TTTT", "clear prefs");
+            editor.clear().commit();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+//        prefs = getSharedPreferences("prefs" + rec.getName(), MODE_PRIVATE);
 //        SharedPreferences.Editor editor = prefs.edit();
 //
-//        editor.putLong("millisLeft", mtimeLeftInMiliseconds);
-//        editor.putBoolean("timerRunning", mTimerOff);
-//        editor.putLong("endTime", mEndTime);
+//        if(used){
+//            Log.v("TTTT", "onDestroy");
 //
-//        editor.apply();
+//            editor.putString("prev", "prev");
+//            editor.putBoolean("used", used);
+//            editor.putLong("remaining", mtimeLeftInMiliseconds);
+//            editor.putLong("millisEnd", endTime);
+//            editor.putBoolean("first", firstStart);
+//            editor.putBoolean("running", mTimerOn);
 //
-//        if (mCountDown != null) {
-//            mCountDown.cancel();
+//            editor.apply();
+//            if (mCountDown != null) {
+//                mCountDown.cancel();
+//            }
+//        }else{
+//            editor.clear();
 //        }
+
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+//        prefs = getSharedPreferences("prefs" + rec.getName(), MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//
+//        if(used){
+//            Log.v("TTTT", "onStop");
+//
+//            editor.putString("prev", "prev");
+//            editor.putBoolean("used", used);
+//            editor.putLong("remaining", mtimeLeftInMiliseconds);
+//            editor.putLong("millisEnd", endTime);
+//            editor.putBoolean("first", firstStart);
+//            editor.putBoolean("running", mTimerOn);
+//
+//            editor.apply();
+//            if (mCountDown != null) {
+//                mCountDown.cancel();
+//            }
+//        }else{
+//            editor.clear();
+//        }
+
+
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        prefs = getSharedPreferences("prefs" + rec.getName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
 
-//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-//
-//        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
-//        Log.v("SAVED", ":" + msteepTimeInMiliseconds);
-//        mTimerOn = prefs.getBoolean("timerRunning", false);
-//
-//        updateCountDownTime();
-//
-//        if (mTimerOn) {
-//            mEndTime = prefs.getLong("endTime", 0);
-//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
-//
-//            if (mtimeLeftInMiliseconds < 0) {
-//                mtimeLeftInMiliseconds = 0;
-//                mTimerOn = false;
-//            } else {
-//                startTimer();
-//            }
-//        }
+        if(prefs.contains("first"))
+            Log.v("TTTT", "CONTAINSR:");
+
+        used = prefs.getBoolean("used" + rec.getName(), used);
+        if(used){
+            firstStart = prefs.getBoolean("first" + rec.getName(), firstStart);
+            Log.v("TTTT", "got prefs :" + used);
+            endTime = prefs.getLong("millisEnd" + rec.getName(), endTime);
+            Log.v("TTTT", endTime + "-");
+
+            if (endTime > System.currentTimeMillis()) {
+                mTimerOn = prefs.getBoolean("running" + rec.getName(), mTimerOn);
+                mtimeLeftInMiliseconds = endTime - System.currentTimeMillis();
+                if (mTimerOn)
+                    startTimer();
+                updateCountDownTime();
+            }else{
+                updateCountDownTime();
+            }
+
+        }else{
+            mTimerOn = false;
+            firstStart = true;
+            resetTimer();
+            used = false;
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.v("TTTT", "On Start");
+        firstStart = true;
 
-//        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-//
-//        mtimeLeftInMiliseconds = prefs.getLong("millisLeft", msteepTimeInMiliseconds);
-//        mTimerOn = prefs.getBoolean("timerRunning", false);
-//
-//        updateCountDownTime();
-//
-//        if (mTimerOn) {
-//            mEndTime = prefs.getLong("endTime", 0);
-//            mtimeLeftInMiliseconds = mEndTime - System.currentTimeMillis();
-//
-//            if (mtimeLeftInMiliseconds < 0) {
-//                mtimeLeftInMiliseconds = 0;
-//                mTimerOn = false;
-//            } else {
-//                startTimer();
-//            }
-//        }
+
     }
 
     //Not my code, found example on stackexchange
@@ -374,6 +466,27 @@ public class Timer extends AppCompatActivity {
         int green = (int) ((Color.green(color) * (1 - factor) / 255 + factor) * 255);
         int blue = (int) ((Color.blue(color) * (1 - factor) / 255 + factor) * 255);
         return Color.argb(Color.alpha(color), red, green, blue);
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Log.v("NOTIF", "starting notification");
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(rec.getName() + " Finished!");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.mipmap.ic_steepr_bg_round);
+        return builder.build();
     }
 
 }
