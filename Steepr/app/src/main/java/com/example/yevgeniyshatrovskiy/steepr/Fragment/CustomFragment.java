@@ -128,7 +128,7 @@ public class CustomFragment extends Fragment {
                     newRecipe.setSecondsToSteep(steepTime);
                     newRecipe.setDescription(desInput.getText().toString());
                     newRecipe = determineImage(spinner.getSelectedItem().toString(),newRecipe);
-                    newRecipe.setChineseCategory("茶");
+                    newRecipe.setChineseCategory("嬖");
                     newRecipe.setChineseName("茶");
 
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();

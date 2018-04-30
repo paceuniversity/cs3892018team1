@@ -94,8 +94,11 @@ public class Timer extends AppCompatActivity {
         textDescription.setText(rec.getDescription());
 
         textTemperature = findViewById(R.id.textTemperature);
-        textTemperature.setText("Steep Temperature: " + Integer.toString(rec.getTemperature()) + "°F"); //To be honest I'm not sure if it's correct practice.
-
+        if(english) {
+            textTemperature.setText("Steep Temperature: " + Integer.toString(rec.getTemperature()) + "°F");//To be honest I'm not sure if it's correct practice.
+        }else{
+            textTemperature.setText("温度: " + Integer.toString(((rec.getTemperature() + - 32)*5)/9) + "°C");//To be honest I'm not sure if it's correct practice.
+        }
 
         textTitle = findViewById(R.id.textTitle);
         mButtonStart = findViewById(R.id.buttonStart);

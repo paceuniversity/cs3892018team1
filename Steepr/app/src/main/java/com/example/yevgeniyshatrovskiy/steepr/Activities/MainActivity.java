@@ -81,6 +81,13 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference writeRef = database.getReference("Public");
+        final DatabaseReference myRef = database.getReference();
+
+        Recipe Biluochun = new Recipe("Biluochun", "Biluochun, literally meaning \"Green Snail Spring\", is named for being a green tea that is rolled up into a tight spiral, much like a snail, and cropped in Spring. It was ranked number one green tea in Cha Shuo, a tea encyclopedia.", 60, 195, null, null, "Green", "#f6F6F6", "greentea", "#008000");
+        writeRef.child(Biluochun.getName()).setValue(Biluochun);
+
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
