@@ -14,6 +14,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
@@ -495,6 +496,8 @@ public class Timer extends AppCompatActivity {
         builder.setContentTitle(rec.getName() + " Finished!");
         builder.setContentText(content);
         builder.setSmallIcon(R.mipmap.ic_steepr_bg_round);
+        builder.setVibrate(new long[] {0, 250, 250, 250});
+        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         return builder.build();
     }
 
