@@ -115,16 +115,34 @@ public class CustomFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                getActivity().getSupportFragmentManager().beginTransaction().remove();
+
                 try{
-
                     Recipe newRecipe = new Recipe();
-
                     newRecipe.setCategory("Favorite");
                     newRecipe.setName(nameInput.getText().toString());
                     newRecipe.setTemperature(Integer.parseInt(tempInput.getText().toString()));
-                    int steepTime = ((Integer.parseInt(minInput.getText().toString())) * 60) +
-                            (Integer.parseInt(secInput.getText().toString()));
+
+                    int timeMin, timeSec;
+                    String minText = minInput.getText().toString();
+                    String secText = secInput.getText().toString();
+
+                    if(minText.equals("")){
+                        timeMin = 0;
+                    }else{
+                        timeMin = Integer.parseInt(minInput.getText().toString());
+                    }
+
+
+                    if(secText.equals("")){
+                        timeSec = 0;
+                    }else{
+                        timeSec = Integer.parseInt(secInput.getText().toString());
+                    }
+                    int steepTime = (timeMin * 60) + timeSec;
+
+                    if(steepTime <= 0)
+                        throw new Exception();
+
                     newRecipe.setSecondsToSteep(steepTime);
                     newRecipe.setDescription(desInput.getText().toString());
                     newRecipe = determineImage(spinner.getSelectedItem().toString(),newRecipe);
@@ -141,7 +159,6 @@ public class CustomFragment extends Fragment {
                 }catch (Exception e){
                     Toast.makeText(getActivity(), "Please Fill All Fields",
                             Toast.LENGTH_SHORT).show();
-//                    getActivity().onBackPressed();
                 }
 
 

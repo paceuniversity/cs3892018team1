@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
     ChildEventListener listener;
     ChildEventListener favListener;
     ProgressBar bar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
         userID = firebaseUser.getUid();
 
 //        NavigationView navigationView = findViewById(R.id.nav_view);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -376,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
         myRef.removeEventListener(listener);
         favRef.child(userID).removeEventListener(favListener);
         Log.v("LISTENER", "Removed");
+        fab.setEnabled(false);
     }
 
     public void restartListener(){
@@ -385,12 +387,14 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
 
     @Override
     public void onBackPressed() {
+        restartListener();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
+        fab.setEnabled(true);
     }
 
     @Override

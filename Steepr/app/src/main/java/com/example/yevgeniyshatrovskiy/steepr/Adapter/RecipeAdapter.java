@@ -2,17 +2,12 @@ package com.example.yevgeniyshatrovskiy.steepr.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,19 +16,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.yevgeniyshatrovskiy.steepr.Activities.MainActivity;
-import com.example.yevgeniyshatrovskiy.steepr.Activities.Swipe;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.Recipe;
-import com.example.yevgeniyshatrovskiy.steepr.Objects.SwipeActions;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaCategory;
 import com.example.yevgeniyshatrovskiy.steepr.Objects.TeaDetails;
 import com.example.yevgeniyshatrovskiy.steepr.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by yevgeniy on 3/29/18.

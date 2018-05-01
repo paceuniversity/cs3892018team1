@@ -194,13 +194,6 @@ public class Timer extends AppCompatActivity {
         FirebaseUser firebaseUser = auth.getCurrentUser();
         String userID = firebaseUser.getUid();
         myRef.child(userID).child("Favorites").child(rep.getName()).setValue(rep);
-
-////                Recipe rep = new Recipe("Awesome", "Weird", 60, null,
-////                        "greentea","Favorite", "#ffffff","greentea",
-////                        "#BD8300","茶","茶");
-////                myRef.child(userID).child("Favorites").child(rep.getName()).removeValue();
-//
-////                Log.v("REC:",  teaCategories.get(position).getRecipes().get(position);
         this.invalidateOptionsMenu();
     }
 
@@ -280,6 +273,7 @@ public class Timer extends AppCompatActivity {
             mTimerOn = false;
             firstStart = true;
         }
+        cancelNotification(getNotification("Steepr"), (int)mtimeLeftInMiliseconds);
     }
 
 
@@ -343,7 +337,6 @@ public class Timer extends AppCompatActivity {
 
         if(used){
             Log.v("TTTT", "onPause");
-
             editor.putString("prev" + rec.getName(), "prev");
             editor.putBoolean("used" + rec.getName(), used);
             editor.putLong("remaining" + rec.getName(), mtimeLeftInMiliseconds);
@@ -482,6 +475,19 @@ public class Timer extends AppCompatActivity {
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private void cancelNotification(Notification notification, int delay){
+
+        Log.v("NOTIF", "starting notification");
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 
     private Notification getNotification(String content) {
