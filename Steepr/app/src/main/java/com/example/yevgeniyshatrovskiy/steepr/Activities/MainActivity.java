@@ -378,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
         favRef.child(userID).removeEventListener(favListener);
         Log.v("LISTENER", "Removed");
         fab.setEnabled(false);
+        fab.setVisibility(View.GONE);
     }
 
     public void restartListener(){
@@ -395,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements CustomFragment.On
             super.onBackPressed();
         }
         fab.setEnabled(true);
+        fab.setVisibility(View.VISIBLE);
     }
 
     @Override

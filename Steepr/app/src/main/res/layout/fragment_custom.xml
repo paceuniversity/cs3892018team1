@@ -273,8 +273,10 @@
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"
             android:layout_weight="1"
+            android:background="@color/colorPrimary"
             android:gravity="center"
-            android:text="Submit" />
+            android:text="Submit"
+            android:textColor="@android:color/background_light" />
     </LinearLayout>
 
 </LinearLayout>

@@ -14,6 +14,7 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -39,6 +40,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/colorPrimary"
-        android:src="@mipmap/ic_steepr_bg_round"/>
+        android:src="@mipmap/ic_steepr_bg_round"
+        app:backgroundTint="@color/colorPrimary" />
 
 </android.support.design.widget.CoordinatorLayout>
