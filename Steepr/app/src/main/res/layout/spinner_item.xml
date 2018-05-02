@@ -5,6 +5,5 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:gravity="center"
-    android:padding="10dp"
     android:textColor="@color/colorAccent"
     android:textSize="15sp" />
