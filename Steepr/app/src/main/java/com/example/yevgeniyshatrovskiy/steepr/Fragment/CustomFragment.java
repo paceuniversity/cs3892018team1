@@ -120,9 +120,10 @@ public class CustomFragment extends Fragment {
                     Recipe newRecipe = new Recipe();
                     newRecipe.setCategory("Favorite");
                     newRecipe.setName(nameInput.getText().toString());
-                    newRecipe.setTemperature(Integer.parseInt(tempInput.getText().toString()));
+//                    newRecipe.setTemperature(Integer.parseInt(tempInput.getText().toString()));
 
-                    int timeMin, timeSec;
+                    int timeMin, timeSec, temp;
+                    temp = Integer.parseInt(tempInput.getText().toString());
                     String minText = minInput.getText().toString();
                     String secText = secInput.getText().toString();
 
@@ -131,7 +132,6 @@ public class CustomFragment extends Fragment {
                     }else{
                         timeMin = Integer.parseInt(minInput.getText().toString());
                     }
-
 
                     if(secText.equals("")){
                         timeSec = 0;
@@ -142,6 +142,11 @@ public class CustomFragment extends Fragment {
 
                     if(steepTime <= 0)
                         throw new Exception();
+
+                    if(tempSpinner.getSelectedItem().equals("C\u00B0"))
+                        newRecipe.setTemperature((int)(((double)temp * 1.8) + 32));
+                    else
+                        newRecipe.setTemperature(temp);
 
                     newRecipe.setSecondsToSteep(steepTime);
                     newRecipe.setDescription(desInput.getText().toString());

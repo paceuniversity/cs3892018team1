@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -304,29 +306,6 @@ public class Timer extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putLong("millisLeft", mtimeLeftInMiliseconds);
-//        outState.putBoolean("timerRunning", mTimerOn);
-//        outState.putLong("endTime", endTime);
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        mTimerOn = savedInstanceState.getBoolean("timerRunning");
-//        endTime = savedInstanceState.getLong("endTime");
-//        updateCountDownTime();
-//
-//        if (mTimerOn) {
-//            endTime = savedInstanceState.getLong("endTime");
-//            mtimeLeftInMiliseconds = endTime - System.currentTimeMillis();
-//            startTimer();
-//        }
-//    }
-
 
 
     @Override
@@ -437,7 +416,8 @@ public class Timer extends AppCompatActivity {
                     startTimer();
                 updateCountDownTime();
             }else{
-                updateCountDownTime();
+                mCountDownText.setText("Your tea is ready!");
+//                updateCountDownTime();
             }
 
         }else{
@@ -492,12 +472,13 @@ public class Timer extends AppCompatActivity {
     }
 
     private Notification getNotification(String content) {
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(rec.getName() + " Finished!");
         builder.setContentText(content);
         builder.setSmallIcon(R.mipmap.ic_steepr_bg_round);
         builder.setVibrate(new long[] {0, 250, 250, 250});
-        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        builder.setSound(alarmSound);
         return builder.build();
     }
 
