@@ -119,6 +119,7 @@ public class CustomFragment extends Fragment {
                 try{
                     Recipe newRecipe = new Recipe();
                     newRecipe.setCategory("Favorite");
+                    newRecipe.setChineseCategory("喜爱");
                     newRecipe.setName(nameInput.getText().toString());
 //                    newRecipe.setTemperature(Integer.parseInt(tempInput.getText().toString()));
 
@@ -151,8 +152,10 @@ public class CustomFragment extends Fragment {
                     newRecipe.setSecondsToSteep(steepTime);
                     newRecipe.setDescription(desInput.getText().toString());
                     newRecipe = determineImage(spinner.getSelectedItem().toString(),newRecipe);
-                    newRecipe.setChineseCategory("嬖");
-                    newRecipe.setChineseName("茶");
+                    newRecipe.setChineseCategory("喜爱");
+                    //newRecipe.setChineseName("茶");
+                    newRecipe.setChineseName(nameInput.getText().toString()); //Making name of favorite always user input instead of 茶. You would think we could just remove this.
+                    newRecipe.setChineseDescription(desInput.getText().toString());
 
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference myRef = database.child("users");

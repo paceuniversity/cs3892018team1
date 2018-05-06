@@ -94,13 +94,18 @@ public class Timer extends AppCompatActivity {
         }
 
         textDescription = findViewById(R.id.textDescription);
-        textDescription.setText(rec.getDescription());
+        if(english) {
+            textDescription.setText(rec.getDescription());
+        }else{
+            textDescription.setText(rec.getChineseDescription());
+        }
+
 
         textTemperature = findViewById(R.id.textTemperature);
         if(english) {
             textTemperature.setText("Steep Temperature: " + Integer.toString(rec.getTemperature()) + "°F");//To be honest I'm not sure if it's correct practice.
         }else{
-            textTemperature.setText("温度: " + Integer.toString(((rec.getTemperature() + - 32)*5)/9) + "°C");//To be honest I'm not sure if it's correct practice.
+            textTemperature.setText("温度: " + Integer.toString(((rec.getTemperature() + - 32)*5)/9) + "°C");
         }
 
         textTitle = findViewById(R.id.textTitle);
@@ -190,6 +195,7 @@ public class Timer extends AppCompatActivity {
 
     public void addFavorite(Recipe rep){
         rep.setCategory("Favorite");
+        rep.setChineseCategory("喜爱"); //theoretical to get chinese favorites tab to actually say favorite - seems to work.
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference myRef = database.child("users");
 
@@ -417,7 +423,7 @@ public class Timer extends AppCompatActivity {
                 updateCountDownTime();
             }else{
                 mCountDownText.setText("Your tea is ready!");
-//                updateCountDownTime();
+//                updateCountDownTime()
             }
 
         }else{
